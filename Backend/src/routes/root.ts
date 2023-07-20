@@ -1,6 +1,5 @@
 import route from "../common/routeNames";
 import {Request, Response, Router} from "express";
-import {users} from "../models/db";
 
 const rootRouter: Router = Router()
 rootRouter.get(route.home.main, (req: Request, res: Response) => {
@@ -13,4 +12,4 @@ rootRouter.get(route.home.main, (req: Request, res: Response) => {
   );
 });
 
-export  {rootRouter}
+export {rootRouter}
