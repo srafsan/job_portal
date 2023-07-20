@@ -24,7 +24,6 @@ router.get(route.auth.login, (req: Request, res: Response) => {
 });
 
 // Login Post
-// @ts-ignore
 router.post(route.auth.login, (req: Request, res: Response) => {
   const {email, password} = req.body;
 
