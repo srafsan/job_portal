@@ -2,8 +2,8 @@ import {IAuthProvider, ITokenPayload} from "./interfaces";
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {appConfig} from "../config/appConfig";
 
-export function tokenGenerate(payload: ITokenPayload, user: any): string {
-  return jwt.sign(payload, appConfig.accessTokenSecret, {expiresIn: `${appConfig.tokenLifeTime}s`});
+export function tokenGenerate(payload: ITokenPayload): string {
+  return jwt.sign(payload, appConfig.accessTokenSecret);
 }
 
 export function tokenChecker(token: string): JwtPayload | string | boolean {
