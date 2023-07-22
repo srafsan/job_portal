@@ -1,9 +1,10 @@
-import express, { Express, Request, Response } from "express";
+import express, {Express, Request, Response} from "express";
 import route from "./common/routeNames";
-import { router as authRouter } from "./routes/auth";
+import {router as authRouter} from "./routes/auth";
 import bodyParser from "body-parser";
 import {rootRouter} from "./routes/root";
 import {users} from "./models/db";
+import verifyJWT from "./middleware/verifyJWT";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -16,7 +17,7 @@ app.use(
 );
 
 // Routes
-app.get("/users", (req: Request, res: Response) => {
+app.get("/users", verifyJWT, (req: Request, res: Response) => {
   res.send(users)
 })
 app.use(route.home.main, rootRouter)
