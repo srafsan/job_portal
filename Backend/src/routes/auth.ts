@@ -1,10 +1,11 @@
 import { Request, Response, Router } from "express";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
 import route from "../common/routeNames";
 import { users } from "../models/db";
-import dotenv from "dotenv";
-import { tokenGenerate } from "../common/functions";
+import { insertDB, tokenGenerate } from "../common/functions";
 import { ITokenPayload } from "../common/interfaces";
-import jwt from "jsonwebtoken";
 import { appConfig } from "../config/appConfig";
 
 dotenv.config();
@@ -90,7 +91,7 @@ router.post(route.auth.login, (req: Request, res: Response) => {
 
 // Registration Get
 router.get(route.auth.signup, (req: Request, res: Response) => {
-  res.send(`<h1>Registration</h1>
+  res.send(`<h1>Signup</h1>
       <form method="post" action=${route.auth.signup}>
         <input name="name" placeholder="name" required/>
         <input type="email" name="email" placeholder="Email" required/>
@@ -105,20 +106,22 @@ router.post(route.auth.signup, (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
   if (name && email && password) {
-    const exists = users.some((user) => user.user_email === email);
+    // const exists = users.some((user) => user.user_email === email);
+    const exists = false;
 
     if (!exists) {
       const newUser: any = {
-        user_id: users.length + 1,
-        user_name: name,
-        user_email: email,
-        user_password: password,
-        role: "normal",
+        name: name,
+        email: email,
+        password: password,
       };
 
-      users.push(newUser);
+      const isCreate = insertDB(newUser);
+      console.log(isCreate);
 
       return res.redirect(route.auth.login);
+    } else {
+      alert("User Exists");
     }
   }
 });

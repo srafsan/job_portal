@@ -1,6 +1,17 @@
-import { IAuthProvider, ITokenPayload } from "./interfaces";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { PrismaClient } from "@prisma/client";
+
+import { IAuthProvider, ITokenPayload } from "./interfaces";
 import { appConfig } from "../config/appConfig";
+
+const prisma = new PrismaClient();
+
+export async function insertDB(userInfo: any): Promise<any> {
+  const user = await prisma.user.create({ data: userInfo });
+  console.log(user);
+
+  return user ? true : false;
+}
 
 export function tokenGenerate(payload: ITokenPayload, timer: string): string {
   return jwt.sign(payload, appConfig.accessTokenSecret, {
