@@ -6,11 +6,21 @@ import { appConfig } from "../config/appConfig";
 
 const prisma = new PrismaClient();
 
-export async function insertDB(userInfo: any): Promise<any> {
+export async function insertDB(userInfo: any): Promise<Boolean> {
   const user = await prisma.user.create({ data: userInfo });
-  console.log(user);
 
-  return user ? true : false;
+  return !!user;
+}
+
+export async function findIntoDB(
+  userEmail: string,
+  userPassword: string
+): Promise<any> {
+  const isPresent = await prisma.user.findFirst({
+    where: { email: userEmail, password: userPassword },
+  });
+
+  return isPresent;
 }
 
 export function tokenGenerate(payload: ITokenPayload, timer: string): string {

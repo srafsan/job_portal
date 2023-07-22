@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 import route from "../common/routeNames";
 import { users } from "../models/db";
-import { insertDB, tokenGenerate } from "../common/functions";
+import { findIntoDB, insertDB, tokenGenerate } from "../common/functions";
 import { ITokenPayload } from "../common/interfaces";
 import { appConfig } from "../config/appConfig";
 
@@ -30,9 +30,9 @@ router.post("/token", (req: Request, res: Response) => {
       if (err) return res.sendStatus(403);
       const newPayloadToken = {
         name: user.name,
-        recruiter: false,
-        admin: false,
-        applicant: false,
+        recruiter: user.recruiter,
+        admin: user.admin,
+        applicant: user.applicant,
       };
       const accessToken = tokenGenerate(newPayloadToken, accessTokenTimer);
 
@@ -60,21 +60,16 @@ router.get(route.auth.login, (req: Request, res: Response) => {
 });
 
 // Login Post
-router.post(route.auth.login, (req: Request, res: Response) => {
+router.post(route.auth.login, async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
-  const user = users.find(
-    (user) =>
-      user.user_email.toLowerCase() === email.toLowerCase() &&
-      user.user_password === password
-  );
+  const user = await findIntoDB(email, password);
 
   if (!user) {
     return res.redirect(route.auth.login);
   } else {
     const payloadToken: ITokenPayload = {
-      name: user.user_name,
-      email: user.user_email,
+      name: user.name,
+      email: user.email,
       applicant: user.applicant,
       recruiter: user.recruiter,
       admin: user.admin,
@@ -102,26 +97,28 @@ router.get(route.auth.signup, (req: Request, res: Response) => {
 });
 
 // Registration Post
-router.post(route.auth.signup, (req: Request, res: Response) => {
+router.post(route.auth.signup, async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
   if (name && email && password) {
-    // const exists = users.some((user) => user.user_email === email);
-    const exists = false;
+    const isExist = await findIntoDB(email, password);
+    const exits = !!isExist;
 
-    if (!exists) {
+    if (!exits) {
       const newUser: any = {
         name: name,
         email: email,
         password: password,
+        applicant: true,
+        recruiter: false,
+        admin: false,
       };
 
-      const isCreate = insertDB(newUser);
-      console.log(isCreate);
+      await insertDB(newUser);
 
       return res.redirect(route.auth.login);
     } else {
-      alert("User Exists");
+      res.send("User Exists");
     }
   }
 });
