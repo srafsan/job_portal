@@ -11,7 +11,7 @@ dotenv.config();
 
 const router: Router = Router();
 
-const accessTokenTimer = "10s";
+const accessTokenTimer = "600s";
 const refreshTokenTimer = "1h";
 let refreshTokens: string[] = [];
 
