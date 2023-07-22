@@ -3,13 +3,42 @@ import route from "../common/routeNames";
 import { users } from "../models/db";
 import dotenv from "dotenv";
 import { tokenGenerate } from "../common/functions";
-import verifyJWT from "../middleware/verifyJWT";
 import { ITokenPayload } from "../common/interfaces";
+import jwt from "jsonwebtoken";
+import { appConfig } from "../config/appConfig";
 
 dotenv.config();
-const fsPromises = require("fs").promises;
 
 const router: Router = Router();
+
+const accessTokenTimer = "10s";
+const refreshTokenTimer = "1h";
+let refreshTokens: string[] = [];
+
+// Generate new access token
+router.post("/token", (req: Request, res: Response) => {
+  const refreshToken = req.body.token;
+
+  if (refreshToken == null) return res.sendStatus(401);
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+
+  jwt.verify(
+    refreshToken,
+    appConfig.refreshTokenSecret,
+    (err: any, user: any) => {
+      if (err) return res.sendStatus(403);
+      const newPayloadToken = {
+        name: user.name,
+        recruiter: false,
+        admin: false,
+        applicant: false,
+      };
+      const accessToken = tokenGenerate(newPayloadToken, accessTokenTimer);
+
+      res.json({ accessToken: accessToken });
+    }
+  );
+});
 
 // Dashboard
 router.get(route.home.dashboard, (req: Request, res: Response) => {
@@ -50,10 +79,11 @@ router.post(route.auth.login, (req: Request, res: Response) => {
       admin: user.admin,
     };
 
-    const accessToken = tokenGenerate(payloadToken);
-    console.log(accessToken);
+    const accessToken = tokenGenerate(payloadToken, accessTokenTimer);
+    const refreshToken = tokenGenerate(payloadToken, refreshTokenTimer);
+    refreshTokens.push(refreshToken);
 
-    res.json({ accessToken: accessToken });
+    res.json({ accessToken: accessToken, refreshToken });
     // return res.redirect(route.home.dashboard);
   }
 });
@@ -91,6 +121,12 @@ router.post(route.auth.signup, (req: Request, res: Response) => {
       return res.redirect(route.auth.login);
     }
   }
+});
+
+// Logout
+router.delete(route.auth.logout, (req: Request, res: Response) => {
+  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+  res.sendStatus(204);
 });
 
 export { router };
