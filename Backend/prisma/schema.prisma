@@ -11,11 +11,20 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  name      String
-  email     String
-  password  String
-  applicant Boolean
-  recruiter Boolean
-  admin     Boolean
+  id           Int              @id @default(autoincrement())
+  name         String
+  email        String           @unique
+  password     String
+  applicant    Boolean
+  recruiter    Boolean
+  admin        Boolean
+  sid          String           @default(uuid())
+  RefreshToken BlackListToken[]
+}
+
+model BlackListToken {
+  tokenId   Int    @id @default(autoincrement())
+  userEmail String
+  token     String
+  email     User   @relation(fields: [userEmail], references: [email])
 }

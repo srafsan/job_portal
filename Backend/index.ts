@@ -6,6 +6,7 @@ import { router as authRouter } from "./src/routes/auth";
 import { rootRouter } from "./src/routes/root";
 import { users } from "./src/models/db";
 import verifyJWT from "./src/middleware/verifyJWT";
+import permit from "./src/middleware/authorization";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -21,6 +22,15 @@ app.use(
 app.get("/users", verifyJWT, (req: Request, res: Response) => {
   res.send(users);
 });
+
+app.get(
+  "/authorization_test",
+  [verifyJWT, permit(true)],
+  (req: Request, res: Response) => {
+    res.send("Dashboard");
+  }
+);
+
 app.use(route.home.main, rootRouter);
 app.use(route.home.main, authRouter);
 

@@ -1,19 +1,26 @@
-import {NextFunction, Request, Response} from "express";
-import {tokenChecker} from "../common/functions";
+import { NextFunction, Request, Response } from "express";
+import { authProvider } from "../services/dbServices";
 
-const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
+export const getToken = (req: Request) => {
+  const authorization = <string>req.headers.authorization;
+  return authorization.split(" ")[1];
+};
+const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
   const authorization = req.headers.authorization;
   if (!authorization) {
-    return res.status(401).send({error: true, message: "unauthorized access"});
-  }
-  const token = authorization.split(" ")[1];
-  const payload = tokenChecker(token)
-  if (!payload) {
     return res
       .status(401)
-      .send({error: true, message: "unauthorized access"});
+      .send({ error: true, message: "unauthorized access" });
   }
-  (<any>req)['decoded'] = payload;
+  const token = authorization.split(" ")[1];
+  const user = await authProvider(token);
+
+  if (!user) {
+    return res
+      .status(401)
+      .send({ error: true, message: "unauthorized access" });
+  }
+  (<any>req)["user"] = user;
   next();
 };
 

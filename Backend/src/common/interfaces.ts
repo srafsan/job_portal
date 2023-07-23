@@ -1,27 +1,25 @@
+import jwt, { JwtPayload } from "jsonwebtoken";
+
 export interface IAuthProvider {
-  sid: string,
-  id: string | number,
-  role: string,
-  username: string,
-  email: string,
-  phone?: string,
-  last_login: string
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  applicant: boolean;
+  recruiter: boolean;
+  admin: boolean;
+  sid: string;
 }
 
-export interface JwtPayload {
-  [key: string]: any;
-  iss?: string | undefined;
-  sub?: string | undefined;
-  aud?: string | string[] | undefined;
-  exp?: number | undefined;
-  nbf?: number | undefined;
-  iat?: number | undefined;
-  jti?: string | undefined;
+declare module "jsonwebtoken" {
+  export interface ITokenPayload extends JwtPayload {
+    sid: string;
+    name: string;
+    recruiter: boolean;
+    admin: boolean;
+    applicant: boolean;
+  }
 }
-
-export interface ITokenPayload extends  JwtPayload {
-  name: string,
-  recruiter: boolean,
-  admin: boolean,
-  applicant: boolean
+export interface AuthRequest extends Request {
+  user: IAuthProvider;
 }

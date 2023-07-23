@@ -1,20 +1,30 @@
-import { Request, Response, Router } from "express";
-import jwt from "jsonwebtoken";
+import { NextFunction, Request, Response, Router } from "express";
+import jwt, { ITokenPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
+import { v4 as uuidv4 } from "uuid";
 
 import route from "../common/routeNames";
-import { users } from "../models/db";
-import { findIntoDB, insertDB, tokenGenerate } from "../common/functions";
-import { ITokenPayload } from "../common/interfaces";
+import {
+  deleteAllJWT,
+  deleteJWT,
+  // deleteJWT,
+  findIntoDB,
+  insertDB,
+  insertJWT,
+} from "../services/dbServices";
 import { appConfig } from "../config/appConfig";
+import verifyJWT, { getToken } from "../middleware/verifyJWT";
+import { getUserName, getUserNameWithEmail } from "../services/authService";
+import { tokenGenerate } from "../services/jwtServices";
+import {
+  accessTokenTimer,
+  refreshTokenTimer,
+  refreshTokens,
+} from "../common/constants";
 
 dotenv.config();
 
 const router: Router = Router();
-
-const accessTokenTimer = "600s";
-const refreshTokenTimer = "1h";
-let refreshTokens: string[] = [];
 
 // Generate new access token
 router.post("/token", (req: Request, res: Response) => {
@@ -29,6 +39,7 @@ router.post("/token", (req: Request, res: Response) => {
     (err: any, user: any) => {
       if (err) return res.sendStatus(403);
       const newPayloadToken = {
+        sid: user.sid,
         name: user.name,
         recruiter: user.recruiter,
         admin: user.admin,
@@ -68,6 +79,7 @@ router.post(route.auth.login, async (req: Request, res: Response) => {
     return res.redirect(route.auth.login);
   } else {
     const payloadToken: ITokenPayload = {
+      sid: user.sid,
       name: user.name,
       email: user.email,
       applicant: user.applicant,
@@ -77,9 +89,15 @@ router.post(route.auth.login, async (req: Request, res: Response) => {
 
     const accessToken = tokenGenerate(payloadToken, accessTokenTimer);
     const refreshToken = tokenGenerate(payloadToken, refreshTokenTimer);
-    refreshTokens.push(refreshToken);
 
-    res.json({ accessToken: accessToken, refreshToken });
+    const userInfo = {
+      userEmail: user.email,
+      token: refreshToken,
+    };
+
+    await insertJWT(userInfo);
+
+    res.json({ accessToken, refreshToken });
     // return res.redirect(route.home.dashboard);
   }
 });
@@ -106,6 +124,7 @@ router.post(route.auth.signup, async (req: Request, res: Response) => {
 
     if (!exits) {
       const newUser: any = {
+        sid: uuidv4(),
         name: name,
         email: email,
         password: password,
@@ -124,9 +143,32 @@ router.post(route.auth.signup, async (req: Request, res: Response) => {
 });
 
 // Logout
-router.delete(route.auth.logout, (req: Request, res: Response) => {
-  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
-  res.sendStatus(204);
-});
+router.delete(
+  route.auth.logout,
+  verifyJWT,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const token = getToken(req);
+    await deleteJWT(token);
+
+    res.sendStatus(200);
+  }
+);
+
+router.delete(
+  route.auth.logoutAll,
+  verifyJWT,
+  async (req: Request, res: Response) => {
+    await deleteAllJWT(req.user.email);
+
+    res.sendStatus(200);
+  }
+);
 
 export { router };
+
+// get user
+router.get("/get-user", [verifyJWT], (req: Request, res: Response) => {
+  const username = getUserName(req.user);
+  const full = getUserNameWithEmail(username, req.user.email);
+  res.json(full);
+});
