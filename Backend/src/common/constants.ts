@@ -1,12 +1,9 @@
 export enum Role {
-  admin = "admin",
-  recruiter = "recruiter",
-  applicant = "applicant",
+  admin = 1,
+  recruiter = 2,
+  applicant = 3,
+  public = 4,
 }
-
-export const adminMiddleware = [];
-export const recruiterMiddleware = [];
-export const applicantMiddleware = [];
 
 export const accessTokenTimer = "600s";
 export const refreshTokenTimer = "1h";

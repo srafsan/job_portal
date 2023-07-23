@@ -17,6 +17,7 @@ import verifyJWT, { getToken } from "../middleware/verifyJWT";
 import { getUserName, getUserNameWithEmail } from "../services/authService";
 import { tokenGenerate } from "../services/jwtServices";
 import {
+  Role,
   accessTokenTimer,
   refreshTokenTimer,
   refreshTokens,
@@ -41,9 +42,7 @@ router.post("/token", (req: Request, res: Response) => {
       const newPayloadToken = {
         sid: user.sid,
         name: user.name,
-        recruiter: user.recruiter,
-        admin: user.admin,
-        applicant: user.applicant,
+        role: user.role,
       };
       const accessToken = tokenGenerate(newPayloadToken, accessTokenTimer);
 
@@ -52,14 +51,8 @@ router.post("/token", (req: Request, res: Response) => {
   );
 });
 
-// Dashboard
-router.get(route.home.dashboard, (req: Request, res: Response) => {
-  res.send("Welcome User");
-});
-
 // Login get
 router.get(route.auth.login, (req: Request, res: Response) => {
-  // const authUser: IAuthProvider =
   res.send(`<h1>Login</h1>
         <form method="post" action=${route.auth.login}>
           <input type="email" name="email" placeholder="Email" required/>
@@ -82,9 +75,7 @@ router.post(route.auth.login, async (req: Request, res: Response) => {
       sid: user.sid,
       name: user.name,
       email: user.email,
-      applicant: user.applicant,
-      recruiter: user.recruiter,
-      admin: user.admin,
+      role: user.role,
     };
 
     const accessToken = tokenGenerate(payloadToken, accessTokenTimer);
@@ -128,9 +119,7 @@ router.post(route.auth.signup, async (req: Request, res: Response) => {
         name: name,
         email: email,
         password: password,
-        applicant: true,
-        recruiter: false,
-        admin: false,
+        role: Role.applicant,
       };
 
       await insertDB(newUser);

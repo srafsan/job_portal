@@ -4,18 +4,16 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "applicant" BOOLEAN NOT NULL,
-    "recruiter" BOOLEAN NOT NULL,
-    "admin" BOOLEAN NOT NULL,
+    "role" INTEGER NOT NULL,
     "sid" TEXT NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "RefreshToken" (
+CREATE TABLE "BlackListToken" (
     "tokenId" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "userEmail" TEXT NOT NULL,
     "token" TEXT NOT NULL,
-    CONSTRAINT "RefreshToken_userEmail_fkey" FOREIGN KEY ("userEmail") REFERENCES "User" ("email") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "BlackListToken_userEmail_fkey" FOREIGN KEY ("userEmail") REFERENCES "User" ("email") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex

@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 
 export async function insertDB(userInfo: any): Promise<Boolean> {
   const user = await prisma.user.create({ data: userInfo });
-
   return !!user;
 }
 

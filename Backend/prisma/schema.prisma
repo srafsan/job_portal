@@ -15,9 +15,7 @@ model User {
   name         String
   email        String           @unique
   password     String
-  applicant    Boolean
-  recruiter    Boolean
-  admin        Boolean
+  role         Int
   sid          String           @default(uuid())
   RefreshToken BlackListToken[]
 }

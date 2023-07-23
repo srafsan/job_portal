@@ -1,13 +1,12 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { Role } from "./constants";
 
 export interface IAuthProvider {
   id: number;
   name: string;
   email: string;
   password: string;
-  applicant: boolean;
-  recruiter: boolean;
-  admin: boolean;
+  role: Role;
   sid: string;
 }
 
@@ -15,9 +14,7 @@ declare module "jsonwebtoken" {
   export interface ITokenPayload extends JwtPayload {
     sid: string;
     name: string;
-    recruiter: boolean;
-    admin: boolean;
-    applicant: boolean;
+    role: Role;
   }
 }
 export interface AuthRequest extends Request {
