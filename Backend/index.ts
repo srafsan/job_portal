@@ -1,9 +1,10 @@
 import express, { Express } from "express";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
 import route from "./src/common/routeNames";
-import { router as authRouter } from "./src/routes/auth";
 import { rootRouter } from "./src/routes/root";
+import { authRouter } from "./src/routes/auth";
 import { dashboardRouter } from "./src/routes/dashboard";
 
 const app: Express = express();
@@ -15,6 +16,8 @@ app.use(
     extended: true,
   })
 );
+
+app.use(cookieParser());
 
 // Routes
 app.use(route.home.main, rootRouter);

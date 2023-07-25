@@ -51,13 +51,19 @@ export async function findJWT(token: string): Promise<any> {
 
 export async function deleteJWT(token: string): Promise<Boolean> {
   const isDeleted = await findJWT(token);
-  console.log(isDeleted);
+
+  if (!isDeleted) {
+    console.log("Refresh Token is not in the database");
+    return false;
+  }
 
   await prisma.blackListToken.delete({
     where: {
       tokenId: isDeleted?.tokenId,
     },
   });
+
+  console.log("Refresh Token is deleted successfully");
 
   return !!isDeleted;
 }

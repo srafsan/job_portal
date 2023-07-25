@@ -7,7 +7,6 @@ import route from "../common/routeNames";
 import {
   deleteAllJWT,
   deleteJWT,
-  // deleteJWT,
   findIntoDB,
   insertDB,
   insertJWT,
@@ -25,10 +24,10 @@ import {
 
 dotenv.config();
 
-const router: Router = Router();
+const authRouter: Router = Router();
 
 // Generate new access token
-router.post("/token", (req: Request, res: Response) => {
+authRouter.post("/token", (req: Request, res: Response) => {
   const refreshToken = req.body.token;
 
   if (refreshToken == null) return res.sendStatus(401);
@@ -52,7 +51,7 @@ router.post("/token", (req: Request, res: Response) => {
 });
 
 // Login get
-router.get(route.auth.login, (req: Request, res: Response) => {
+authRouter.get(route.auth.login, (req: Request, res: Response) => {
   res.send(`<h1>Login</h1>
         <form method="post" action=${route.auth.login}>
           <input type="email" name="email" placeholder="Email" required/>
@@ -64,7 +63,7 @@ router.get(route.auth.login, (req: Request, res: Response) => {
 });
 
 // Login Post
-router.post(route.auth.login, async (req: Request, res: Response) => {
+authRouter.post(route.auth.login, async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const user = await findIntoDB(email, password);
 
@@ -83,18 +82,22 @@ router.post(route.auth.login, async (req: Request, res: Response) => {
 
     const userInfo = {
       userEmail: user.email,
-      token: refreshToken,
+      token: accessToken,
     };
 
     await insertJWT(userInfo);
 
-    res.json({ accessToken, refreshToken });
-    // return res.redirect(route.home.dashboard);
+    res.cookie("accessToken", accessToken, { httpOnly: true });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true });
+
+    if (user.role == 1) return res.redirect(route.dashboard.admin);
+    else if (user.role == 2) return res.redirect(route.dashboard.recruiter);
+    else if (user.role == 3) return res.redirect(route.dashboard.applicants);
   }
 });
 
 // Registration Get
-router.get(route.auth.signup, (req: Request, res: Response) => {
+authRouter.get(route.auth.signup, (req: Request, res: Response) => {
   res.send(`<h1>Signup</h1>
       <form method="post" action=${route.auth.signup}>
         <input name="name" placeholder="name" required/>
@@ -106,7 +109,7 @@ router.get(route.auth.signup, (req: Request, res: Response) => {
 });
 
 // Registration Post
-router.post(route.auth.signup, async (req: Request, res: Response) => {
+authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
   if (name && email && password) {
@@ -132,18 +135,20 @@ router.post(route.auth.signup, async (req: Request, res: Response) => {
 });
 
 // Logout
-router.delete(
+authRouter.delete(
   route.auth.logout,
   verifyJWT,
   async (req: Request, res: Response, next: NextFunction) => {
     const token = getToken(req);
+    console.log(token);
+
     await deleteJWT(token);
 
     res.sendStatus(200);
   }
 );
 
-router.delete(
+authRouter.delete(
   route.auth.logoutAll,
   verifyJWT,
   async (req: Request, res: Response) => {
@@ -153,11 +158,11 @@ router.delete(
   }
 );
 
-export { router };
-
 // get user
-router.get("/get-user", [verifyJWT], (req: Request, res: Response) => {
+authRouter.get("/get-user", [verifyJWT], (req: Request, res: Response) => {
   const username = getUserName(req.user);
   const full = getUserNameWithEmail(username, req.user.email);
   res.json(full);
 });
+
+export { authRouter };
