@@ -11,7 +11,7 @@ export default function Home() {
       <h1>Home</h1>
       <p>
         <span>this is span</span>
-        {/* <Link href="/users">Users</Link> */}
+        <Link href="/users">Users</Link>
       </p>
       <Link href="/material">Link to Mui Page</Link> <br />
       <Link href="/about">Link to About Page</Link>
