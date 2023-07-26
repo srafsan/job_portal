@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 const AboutLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <nav>About Navbar</nav>
       <main className={styles.main}>{children}</main>
     </>
   );

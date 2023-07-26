@@ -2,7 +2,7 @@ import { Suspense } from "react";
 
 import getUser from "@/lib/getUser";
 import getUserPosts from "@/lib/getUserPosts";
-import UserPosts from "./components/UserPosts";
+import UserPosts from "../../../components/users/UserPosts";
 import { Metadata } from "next";
 
 type Params = {

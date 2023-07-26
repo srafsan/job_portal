@@ -1,13 +1,22 @@
+// "use client";
 import Link from "next/link";
+import { Inter } from "next/font/google";
+import Button from "@mui/material/Button";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
-    <main>
+    <div className={inter.className}>
       <h1>Home</h1>
       <p>
-        <Link href="/users">Users</Link>
+        <span>this is span</span>
+        {/* <Link href="/users">Users</Link> */}
       </p>
+      <Link href="/material">Link to Mui Page</Link> <br />
       <Link href="/about">Link to About Page</Link>
-    </main>
+      <br />
+      <Button variant="contained">Hello World</Button>
+    </div>
   );
 }
