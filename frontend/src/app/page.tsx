@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import Link from "next/link";
 import { Inter } from "next/font/google";
 import Button from "@mui/material/Button";

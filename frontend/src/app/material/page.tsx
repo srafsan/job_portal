@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import MuiButton from "@/components/muiComponents/MuiButton";
 import { MuiSelect } from "@/components/muiComponents/MuiSelect";
