@@ -35,12 +35,8 @@ const LoginPage = () => {
       const user: string = await api.post('/login', { username, password });
 
       // Redirect to the appropriate dashboard route after successful login
-      if (user === "admin") {
-        window.location.href = '/dashboard/';
-      } else if (user === "recruiter") {
-        window.location.href = '/dashboard/';
-      } else if (user === "applicant") {
-        window.location.href = '/dashboard/';
+      if (user) {
+        window.location.href = `/dashboard/${user}`;
       }
     } catch (error) {
       // Handle errors here (e.g., show an error message on the form)
