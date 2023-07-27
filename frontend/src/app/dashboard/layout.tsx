@@ -33,7 +33,7 @@ const DashboardLayout = ({children}: { children: React.ReactNode }, props: Props
         // Add more options for the recruiter role if needed
       ],
     },
-    normalUser: {
+    applicant: {
       options: [
         {id: 1, label: 'View Profile', route: '/dashboard/user/profile'},
         {id: 2, label: 'My Cart', route: '/dashboard/user/cart'},

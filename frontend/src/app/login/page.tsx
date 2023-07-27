@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {EventHandler} from "react";
 import {
   Grid,
   Paper,
@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
+import api from "@/utils/api";
 
 const LoginPage = () => {
   const paperStyle = {
@@ -22,6 +23,31 @@ const LoginPage = () => {
     width: 280,
     margin: "20px auto",
   };
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget)
+
+    try {
+      let username = data.get("username"),
+          password = data.get("password");
+
+      const user: string = await api.post('/login', { username, password });
+
+      // Redirect to the appropriate dashboard route after successful login
+      if (user === "admin") {
+        window.location.href = '/dashboard/';
+      } else if (user === "recruiter") {
+        window.location.href = '/dashboard/';
+      } else if (user === "applicant") {
+        window.location.href = '/dashboard/';
+      }
+    } catch (error) {
+      // Handle errors here (e.g., show an error message on the form)
+      console.error('Login failed:', error);
+    }
+  }
+
   // throw new Error("Not today");
   return (
     <>
@@ -33,10 +59,11 @@ const LoginPage = () => {
             </Avatar>
             <h2 style={{marginTop: "10px"}}>Sign In</h2>
           </Box>
-          <Box>
+          <Box component="form" onSubmit={handleLogin} noValidate>
             <Stack spacing={2}>
               <TextField
                 label="Username"
+                name="username"
                 placeholder="Enter Username"
                 variant="standard"
                 fullWidth
@@ -44,6 +71,7 @@ const LoginPage = () => {
               />
               <TextField
                 label="Password"
+                name="password"
                 placeholder="Enter Password"
                 variant="standard"
                 type="password"
