@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import route from "./src/common/routeNames";
 import { rootRouter } from "./src/routes/root";
@@ -18,6 +19,7 @@ app.use(
 );
 
 app.use(cookieParser());
+app.use(cors());
 
 // Routes
 app.use(route.home.main, rootRouter);

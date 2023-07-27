@@ -50,18 +50,6 @@ authRouter.post("/token", (req: Request, res: Response) => {
   );
 });
 
-// Login get
-authRouter.get(route.auth.login, (req: Request, res: Response) => {
-  res.send(`<h1>Login</h1>
-        <form method="post" action=${route.auth.login}>
-          <input type="email" name="email" placeholder="Email" required/>
-          <input type="password" name="password" placeholder="password" required/>
-          <input type="submit" />
-        </form>
-        <a href=${route.auth.signup}>Register</a>
-        `);
-});
-
 // Login Post
 authRouter.post(route.auth.login, async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -90,22 +78,10 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
     res.cookie("accessToken", accessToken, { httpOnly: true });
     res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
-    if (user.role == 1) return res.redirect(route.dashboard.admin);
-    else if (user.role == 2) return res.redirect(route.dashboard.recruiter);
-    else if (user.role == 3) return res.redirect(route.dashboard.applicants);
+    if (user.role == 1) return res.send("admin");
+    else if (user.role == 2) return res.send("recruiter");
+    else if (user.role == 3) return res.send("applicant");
   }
-});
-
-// Registration Get
-authRouter.get(route.auth.signup, (req: Request, res: Response) => {
-  res.send(`<h1>Signup</h1>
-      <form method="post" action=${route.auth.signup}>
-        <input name="name" placeholder="name" required/>
-        <input type="email" name="email" placeholder="Email" required/>
-        <input type="password" name="password" placeholder="password" required/>
-        <input type="submit" />
-      </form>
-      <a href=${route.auth.login}>Login</a>`);
 });
 
 // Registration Post
