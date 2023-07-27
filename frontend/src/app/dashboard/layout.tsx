@@ -1,17 +1,140 @@
-import React from "react";
-import {Metadata} from "next";
+"use client";
+import React, {useState} from "react";
+import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "This is about page",
-};
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import Toolbar from "@mui/material/Toolbar";
+import {Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import InboxIcon from '@mui/icons-material/Inbox';
+import MailIcon from '@mui/icons-material/Mail';
 
-const dashboardLayout = ({children}: { children: React.ReactNode }) => {
+const drawerWidth = 240;
+interface Props {
+  window?: () => Window;
+}
+
+const DashboardLayout = ({children}: { children: React.ReactNode }, props: Props) => {
+  const userOptions = {
+    admin: {
+      options: [
+        {id: 1, label: 'Manage Users', route: '/dashboard/admin/manageUsers'},
+        {id: 2, label: 'Manage Jobs', route: '/dashboard/admin/manageJobs'},
+        {id: 3, label: 'Manage Payments', route: '/dashboard/admin/managePayments'},
+        // Add more options for the admin role if needed
+      ],
+    },
+    recruiter: {
+      options: [
+        {id: 1, label: 'Add Job', route: '/dashboard/recruiter/addJob'},
+        {id: 2, label: 'Manage Jobs', route: '/dashboard/recruiter/manageJobs'},
+        {id: 3, label: 'View Applicants', route: '/dashboard/recruiter/viewApplicants'},
+        // Add more options for the recruiter role if needed
+      ],
+    },
+    normalUser: {
+      options: [
+        {id: 1, label: 'View Profile', route: '/dashboard/user/profile'},
+        {id: 2, label: 'My Cart', route: '/dashboard/user/cart'},
+        {id: 3, label: 'Applied Jobs', route: '/dashboard/user/appliedJobs'},
+        // Add more options for the normal user role if needed
+      ],
+    },
+  };
+
+  const utilsOptions = [
+    {id: 1, label: "Home", route: "/"},
+    {id: 2, label: "Jobs", route: "/jobs"},
+    {id: 3, label: "Logout", route: "/logout"}
+  ]
+
+  const {window} = props;
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <div>
+      <Divider/>
+      <List>
+        {userOptions.recruiter.options.map((user, index) => (
+          <ListItem key={user.id} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+              </ListItemIcon>
+              <Link href={user.route}><ListItemText primary={user.label}/></Link>
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider/>
+      <List>
+        {utilsOptions.map((util, index) => (
+          <ListItem key={util.id} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+              </ListItemIcon>
+              <Link href={util.route}><ListItemText primary={util.label}/></Link>
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
+
+  const container = window !== undefined ? () => window().document.body : undefined;
+
   return (
     <>
-      <main>{children}</main>
+      <Box sx={{display: 'flex'}}>
+        <CssBaseline/>
+        <Box
+          component="nav"
+          sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}
+          aria-label="mailbox folders"
+        >
+          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+          <Drawer
+            container={container}
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              display: {xs: 'block', sm: 'none'},
+              '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
+            }}
+          >
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: {xs: 'none', sm: 'block'},
+              '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+        <Box
+          component="main"
+          sx={{flexGrow: 1, p: 3, width: {sm: `calc(100% - ${drawerWidth}px)`}}}
+        >
+          <Toolbar/>
+          {children}
+        </Box>
+      </Box>
     </>
   );
 };
 
-export default dashboardLayout;
+export default DashboardLayout;
