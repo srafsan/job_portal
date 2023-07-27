@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+
   return (
     <div className={inter.className}>
       <h1>Home</h1>

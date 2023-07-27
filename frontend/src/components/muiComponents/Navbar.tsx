@@ -127,6 +127,9 @@ function Navbar() {
                 {page}
               </Button>
             ))}
+            <Button sx={{ my: 2, color: "white", display: "block" }}>
+              <Link href="/dashboard">Dashboard</Link>
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
