@@ -11,9 +11,14 @@ export async function getAllUsers() {
   return users;
 }
 
-export async function insertDB(userInfo: any): Promise<Boolean> {
+export async function insertUserToDB(userInfo: any): Promise<Boolean> {
   const user = await prisma.user.create({ data: userInfo });
   return !!user;
+}
+
+export async function insertJobToDB(jobInfo: any): Promise<Boolean> {
+  const job = await prisma.jobs.create({ data: jobInfo });
+  return !!job;
 }
 
 export async function findIntoDB(

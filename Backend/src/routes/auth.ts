@@ -8,7 +8,7 @@ import {
   deleteAllJWT,
   deleteJWT,
   findIntoDB,
-  insertDB,
+  insertUserToDB,
   insertJWT,
 } from "../services/dbServices";
 import { appConfig } from "../config/appConfig";
@@ -101,7 +101,7 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
         role: Role.applicant,
       };
 
-      await insertDB(newUser);
+      await insertUserToDB(newUser);
 
       return res.redirect(route.auth.login);
     } else {

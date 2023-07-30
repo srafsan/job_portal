@@ -26,3 +26,10 @@ model BlackListToken {
   token     String
   email     User   @relation(fields: [userEmail], references: [email])
 }
+
+model Jobs {
+  jobId       String @id
+  name        String
+  description String
+  image       String
+}

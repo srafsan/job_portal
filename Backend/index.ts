@@ -7,6 +7,7 @@ import route from "./src/common/routeNames";
 import { rootRouter } from "./src/routes/root";
 import { authRouter } from "./src/routes/auth";
 import { dashboardRouter } from "./src/routes/dashboard";
+import { recruiterRoute } from "./src/routes/recruiter";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -25,6 +26,7 @@ app.use(cors());
 app.use(route.home.main, rootRouter);
 app.use(route.home.main, authRouter);
 app.use(route.home.main, dashboardRouter);
+app.use(route.home.main, recruiterRoute);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

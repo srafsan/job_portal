@@ -1,4 +1,5 @@
 const dashboard = "/dashboard";
+const recruiter = `${dashboard}/recruiter`;
 
 const route = {
   auth: {
@@ -14,6 +15,11 @@ const route = {
     admin: `${dashboard}/admin`,
     recruiter: `${dashboard}/recruiter`,
     applicants: `${dashboard}/applicants`,
+  },
+  recruiter: {
+    addJob: `${recruiter}/addJob`,
+    manageJobs: `${recruiter}/manageJobs`,
+    viewApplicants: `${recruiter}/viewApplicants`,
   },
 };
 
