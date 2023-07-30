@@ -1,5 +1,5 @@
 "use client";
-import React, {EventHandler} from "react";
+import React, { EventHandler } from "react";
 import {
   Grid,
   Paper,
@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   Checkbox,
   Button,
-  Typography
+  Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
@@ -20,19 +20,19 @@ const LoginPage = () => {
   const paperStyle = {
     padding: 20,
     height: "70vh",
-    width: 280,
+    width: 350,
     margin: "20px auto",
   };
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget)
+    const data = new FormData(event.currentTarget);
 
     try {
       let username = data.get("username"),
-          password = data.get("password");
+        password = data.get("password");
 
-      const user: string = await api.post('/login', { username, password });
+      const user: string = await api.post("/login", { username, password });
 
       // Redirect to the appropriate dashboard route after successful login
       if (user) {
@@ -40,9 +40,9 @@ const LoginPage = () => {
       }
     } catch (error) {
       // Handle errors here (e.g., show an error message on the form)
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
-  }
+  };
 
   // throw new Error("Not today");
   return (
@@ -50,10 +50,10 @@ const LoginPage = () => {
       <Grid>
         <Paper elevation={10} style={paperStyle}>
           <Box display="flex" flexDirection="column" alignItems="center">
-            <Avatar style={{backgroundColor: "#1bbd7e"}}>
-              <LockOutlinedIcon/>
+            <Avatar style={{ backgroundColor: "#1bbd7e" }}>
+              <LockOutlinedIcon />
             </Avatar>
-            <h2 style={{marginTop: "10px"}}>Sign In</h2>
+            <h2 style={{ marginTop: "10px" }}>Sign In</h2>
           </Box>
           <Box component="form" onSubmit={handleLogin} noValidate>
             <Stack spacing={2}>
@@ -75,15 +75,21 @@ const LoginPage = () => {
                 required
               />
             </Stack>
-            <FormControlLabel control={<Checkbox/>} label="Remember Me"/>
-            <Button type="submit" variant="contained" color="primary" fullWidth>Sign In</Button>
+            <FormControlLabel control={<Checkbox />} label="Remember Me" />
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Sign In
+            </Button>
           </Box>
           <Stack spacing={1} marginTop={1}>
             <Typography fontSize={14} color="primary">
-              <Link href="#" >Forget Password</Link>
+              <Link href="#">Forget Password</Link>
             </Typography>
-            <Typography fontSize={14}>Do you have an account?
-              <Link href="/register" style={{color: "blue"}}> Register</Link>
+            <Typography fontSize={14}>
+              Do you have an account?
+              <Link href="/register" style={{ color: "blue" }}>
+                {" "}
+                Register
+              </Link>
             </Typography>
           </Stack>
         </Paper>
