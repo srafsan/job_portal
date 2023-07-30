@@ -82,7 +82,7 @@ const DashboardLayout = (
     <div>
       <Divider />
       <List>
-        {userOptions.admin.options.map((user, index) => (
+        {userOptions.recruiter.options.map((user, index) => (
           <ListItem key={user.id} disablePadding>
             <ListItemButton>
               <ListItemIcon>

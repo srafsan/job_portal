@@ -48,9 +48,6 @@ export default function ManageUsersTable({ users }: { users: User[] }) {
               <TableCell align="right">{user.sid}</TableCell>
               <TableCell align="right">
                 <Stack spacing={2}>
-                  <Button variant="outlined" color="inherit">
-                    Update
-                  </Button>
                   <Button variant="contained" color="error">
                     Delete
                   </Button>
