@@ -44,7 +44,11 @@ const RecruiterPage = () => {
         jobData
       );
 
-      console.log("Res.data", res.data);
+      if (res.status === 200) {
+        alert("Job Added Successfully");
+      } else {
+        alert("Something went wrong");
+      }
     } catch (error) {
       console.log("Error posting the job data", error);
     }
