@@ -2,8 +2,8 @@ import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Material UI",
-  description: "This is Material UI page",
+  title: "Sign In",
+  description: "This is Signin page",
 };
 
 export default function LoginLayout({

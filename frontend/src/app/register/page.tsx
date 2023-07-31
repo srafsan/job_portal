@@ -18,7 +18,7 @@ import {
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { useRouter } from "next/navigation";
 
-type Inputs = {
+type SignupInputs = {
   name: string;
   email: string;
   password: string;
@@ -40,9 +40,9 @@ const RegisterPage = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<SignupInputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<SignupInputs> = async (data) => {
     const { name, email, password, cPassword } = data;
 
     if (password !== cPassword) {
@@ -56,14 +56,11 @@ const RegisterPage = () => {
       password,
     };
 
-    console.log(userData);
-
     try {
       const url = "http://localhost:3001/signup";
       const res = await axios.post(url, userData);
-      console.log(res.data);
 
-      if (res.data == "OK") {
+      if (res.status == 200) {
         router.push("/login");
       }
     } catch {
@@ -71,7 +68,6 @@ const RegisterPage = () => {
     }
   };
 
-  // throw new Error("Not today");
   return (
     <>
       <Grid>

@@ -1,14 +1,14 @@
 import React from "react";
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Material UI",
-  description: "This is Material UI page",
+  title: "Sign Up",
+  description: "This is signup page",
 };
 
 export default function RegisterLayout({
-                                         children,
-                                       }: {
+  children,
+}: {
   children: React.ReactNode;
 }) {
   return (

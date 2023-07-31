@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
 import {
   Grid,
   Paper,
@@ -15,35 +17,49 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
 import api from "@/utils/api";
+import { useRouter } from "next/navigation";
+
+type LoginInputs = {
+  email: string;
+  password: string;
+};
+
+const paperStyle = {
+  padding: 20,
+  height: "70vh",
+  width: 350,
+  margin: "20px auto",
+};
 
 const LoginPage = () => {
-  const paperStyle = {
-    padding: 20,
-    height: "70vh",
-    width: 350,
-    margin: "20px auto",
-  };
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<LoginInputs>();
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+  const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
+    const { email, password } = data;
 
-    try {
-      let username = data.get("username"),
-        password = data.get("password");
+    const userData = {
+      email,
+      password,
+    };
 
-      const user: string = await api.post("/login", { username, password });
+    const URL = "http://localhost:3001/login";
+    const res = await axios.post(URL, userData);
 
-      // Redirect to the appropriate dashboard route after successful login
-      if (user) {
-        window.location.href = `/dashboard/${user}`;
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
+    console.log("Login", res.status);
+    if (res.status === 200) {
+      alert("Login Successful");
+      router.push("/dashboard");
+    } else {
+      alert("Wrong Username or password");
     }
   };
 
-  // throw new Error("Not today");
   return (
     <>
       <Grid>
@@ -54,31 +70,27 @@ const LoginPage = () => {
             </Avatar>
             <h2 style={{ marginTop: "10px" }}>Sign In</h2>
           </Box>
-          <Box component="form" onSubmit={handleLogin} noValidate>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2}>
               <TextField
-                label="Username"
-                name="username"
-                placeholder="Enter Username"
+                label="Email"
                 variant="standard"
+                {...register("email", { required: true })}
                 fullWidth
-                required
               />
               <TextField
                 label="Password"
-                name="password"
-                placeholder="Enter Password"
                 variant="standard"
                 type="password"
+                {...register("password", { required: true })}
                 fullWidth
-                required
               />
             </Stack>
             <FormControlLabel control={<Checkbox />} label="Remember Me" />
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Sign In
             </Button>
-          </Box>
+          </form>
           <Stack spacing={1} marginTop={1}>
             <Typography fontSize={14} color="primary">
               <Link href="#">Forget Password</Link>
