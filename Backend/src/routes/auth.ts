@@ -75,6 +75,9 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
 
     await insertJWT(userInfo);
 
+    console.log("accessToken", accessToken);
+    console.log("refreshToken", refreshToken);
+
     res.cookie("accessToken", accessToken, { httpOnly: true });
     res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
@@ -103,10 +106,12 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
 
       await insertUserToDB(newUser);
 
-      return res.redirect(route.auth.login);
+      res.send("Registered Successfully").status(200);
     } else {
       res.send("User Exists");
     }
+  } else {
+    res.send("no data found").status(301);
   }
 });
 
