@@ -1,5 +1,5 @@
 "use client";
-import React, { EventHandler } from "react";
+import React from "react";
 import {
   Grid,
   Paper,
@@ -39,7 +39,6 @@ const LoginPage = () => {
         window.location.href = `/dashboard/${user}`;
       }
     } catch (error) {
-      // Handle errors here (e.g., show an error message on the form)
       console.error("Login failed:", error);
     }
   };

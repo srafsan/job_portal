@@ -39,12 +39,12 @@ const RecruiterPage = () => {
     console.log(jobData);
 
     try {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:3001/dashboard/recruiter/addJob",
         jobData
       );
 
-      console.log("Job data posted successfully");
+      console.log("Res.data", res.data);
     } catch (error) {
       console.log("Error posting the job data", error);
     }
