@@ -20,6 +20,7 @@ import {
   accessTokenTimer,
   refreshTokenTimer,
   refreshTokens,
+  statusMessages,
 } from "../common/constants";
 
 dotenv.config();
@@ -56,7 +57,7 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
   const user = await findIntoDB(email, password);
 
   if (!user) {
-    return res.redirect(route.auth.login);
+    return res.send(statusMessages[404]).sendStatus(404);
   } else {
     const payloadToken: ITokenPayload = {
       sid: user.sid,
@@ -75,15 +76,13 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
 
     await insertJWT(userInfo);
 
-    console.log("accessToken", accessToken);
-    console.log("refreshToken", refreshToken);
-
     res.cookie("accessToken", accessToken, { httpOnly: true });
     res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
     if (user.role == 1) return res.send("admin");
     else if (user.role == 2) return res.send("recruiter");
     else if (user.role == 3) return res.send("applicant");
+    else res.send(statusMessages[404]).sendStatus(404);
   }
 });
 
@@ -106,7 +105,7 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
 
       await insertUserToDB(newUser);
 
-      res.send("Registered Successfully").status(200);
+      res.sendStatus(200);
     } else {
       res.send("User Exists");
     }

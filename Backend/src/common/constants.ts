@@ -8,3 +8,7 @@ export enum Role {
 export const accessTokenTimer = "600s";
 export const refreshTokenTimer = "1h";
 export let refreshTokens: string[] = [];
+
+export const statusMessages = {
+  404: { detail: "Not Found" },
+};
