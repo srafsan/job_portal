@@ -11,29 +11,26 @@ datasource db {
 }
 
 model User {
-  id           Int              @id @default(autoincrement())
-  name         String           @db.VarChar(191)
-  email        String           @unique
-  password     String
-  role         Int
-  sid          String           @default(uuid())
-  RefreshToken BlackListToken[]
-  Jobs         Jobs[]
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(50)
+  email    String @unique @db.VarChar(50)
+  password String @db.VarChar(50)
+  role     Int
+  sid      String @default(uuid())
+  Jobs     Jobs[]
 }
 
 model BlackListToken {
-  tokenId   Int    @id @default(autoincrement())
-  userEmail String
-  token     String
-  email     User   @relation(fields: [userEmail], references: [email])
+  tokenId Int    @id @default(autoincrement())
+  token   String @db.LongText
 }
 
 model Jobs {
   id          Int      @id
-  name        String
-  description String
+  name        String   @db.VarChar(30)
+  description String   @db.VarChar(255)
   salary      Int
-  location    String
+  location    String   @db.VarChar(100)
   experience  Int /// This is in years
   deadline    DateTime
   post_by     Int

@@ -4,13 +4,7 @@ import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 
 import route from "../common/routeNames";
-import {
-  deleteAllJWT,
-  deleteJWT,
-  findIntoDB,
-  insertUserToDB,
-  insertJWT,
-} from "../services/dbServices";
+import { findIntoDB, insertUserToDB, insertJWT } from "../services/dbServices";
 import { appConfig } from "../config/appConfig";
 import verifyJWT, { getToken } from "../middleware/verifyJWT";
 import { getUserName, getUserNameWithEmail } from "../services/authService";
@@ -70,8 +64,7 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
     const refreshToken = tokenGenerate(payloadToken, refreshTokenTimer);
 
     const userInfo = {
-      userEmail: user.email,
-      token: accessToken,
+      token: refreshToken,
     };
 
     await insertJWT(userInfo);
@@ -115,28 +108,28 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
 });
 
 // Logout
-authRouter.delete(
-  route.auth.logout,
-  verifyJWT,
-  async (req: Request, res: Response, next: NextFunction) => {
-    const token = getToken(req);
-    console.log(token);
+// authRouter.delete(
+//   route.auth.logout,
+//   verifyJWT,
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const token = getToken(req);
+//     console.log(token);
 
-    await deleteJWT(token);
+//     await deleteJWT(token);
 
-    res.sendStatus(200);
-  }
-);
+//     res.sendStatus(200);
+//   }
+// );
 
-authRouter.delete(
-  route.auth.logoutAll,
-  verifyJWT,
-  async (req: Request, res: Response) => {
-    await deleteAllJWT(req.user.email);
+// authRouter.delete(
+//   route.auth.logoutAll,
+//   verifyJWT,
+//   async (req: Request, res: Response) => {
+//     await deleteAllJWT(req.user.email);
 
-    res.sendStatus(200);
-  }
-);
+//     res.sendStatus(200);
+//   }
+// );
 
 // get user
 authRouter.get("/get-user", [verifyJWT], (req: Request, res: Response) => {

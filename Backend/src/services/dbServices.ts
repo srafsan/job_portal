@@ -78,12 +78,12 @@ export async function deleteJWT(token: string): Promise<Boolean> {
   return !!isDeleted;
 }
 
-export async function deleteAllJWT(email: string): Promise<Boolean> {
-  const isDeleted = await prisma.blackListToken.deleteMany({
-    where: {
-      userEmail: email,
-    },
-  });
+// export async function deleteAllJWT(email: string): Promise<Boolean> {
+//   const isDeleted = await prisma.blackListToken.deleteMany({
+//     where: {
+//       userEmail: email,
+//     },
+//   });
 
-  return !!isDeleted;
-}
+//   return !!isDeleted;
+// }
