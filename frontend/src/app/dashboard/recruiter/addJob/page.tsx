@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
   Button,
   Grid,
@@ -10,39 +11,46 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { v4 as uuid } from "uuid";
-import axios from "axios";
+import DatePickerFormField from "@/components/DatePickerFormField/DatePickerFormField";
 
 type Inputs = {
   name: string;
   description: string;
-  image: string;
+  salary: string;
+  location: string;
+  experience: number;
+  deadline: Date;
 };
 
 const RecruiterPage = () => {
   const {
     register,
+    control,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const { name, description, image } = data;
+    const { name, description, salary, location, experience, deadline } = data;
+
     const jobData = {
-      id: uuid(),
       name,
       description,
-      image,
+      salary: Number(salary),
+      location,
+      experience: Number(experience),
+      deadline: JSON.stringify(deadline),
+      post_by: 1,
     };
-
-    console.log(jobData);
 
     try {
       const res = await axios.post(
         "http://localhost:3001/dashboard/recruiter/addJob",
         jobData
       );
+
+      console.log("Add Job Res", res);
 
       if (res.status === 200) {
         alert("Job Added Successfully");
@@ -74,7 +82,9 @@ const RecruiterPage = () => {
               <TextField
                 label="Job Name"
                 variant="outlined"
-                {...register("name", { required: true })}
+                {...register("name", {
+                  required: { value: true, message: "Name is required" },
+                })}
               />
               <TextField
                 label="Job Description"
@@ -84,9 +94,34 @@ const RecruiterPage = () => {
                 {...register("description", { required: true })}
               />
               <TextField
-                label="Job image"
+                label="Salary"
                 variant="outlined"
-                {...register("image", { required: true })}
+                type="number"
+                {...register("salary", { required: true })}
+              />
+              <TextField
+                label="Location"
+                variant="outlined"
+                {...register("location", { required: true })}
+              />
+              <TextField
+                label="Experience(In Years)"
+                variant="outlined"
+                type="number"
+                {...register("experience", { required: true })}
+              />
+              <Controller
+                name="deadline"
+                control={control}
+                rules={{ required: "Deadline is required" }}
+                render={({ field, fieldState }) => (
+                  <DatePickerFormField
+                    label="Deadline"
+                    value={field.value}
+                    onChange={(date) => field.onChange(date)}
+                    error={fieldState.error}
+                  />
+                )}
               />
               <Button type="submit" variant="contained" color="primary">
                 Add Job
