@@ -26,13 +26,13 @@ model BlackListToken {
 }
 
 model Jobs {
-  id          Int      @id
-  name        String   @db.VarChar(30)
-  description String   @db.VarChar(255)
+  id          Int    @id
+  name        String @db.VarChar(30)
+  description String @db.VarChar(255)
   salary      Int
-  location    String   @db.VarChar(100)
+  location    String @db.VarChar(100)
   experience  Int /// This is in years
-  deadline    DateTime
+  deadline    String @db.VarChar(250)
   post_by     Int
-  email       User     @relation(fields: [post_by], references: [id])
+  email       User   @relation(fields: [post_by], references: [id])
 }

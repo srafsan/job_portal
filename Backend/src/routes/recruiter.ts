@@ -1,29 +1,51 @@
-import express, { Request, Response, NextFunction, Router } from "express";
+import express, { Request, Response, Router } from "express";
 import { v4 as uuidv4 } from "uuid";
 
 import route from "../common/routeNames";
 import { insertJobToDB } from "../services/dbServices";
-import { statusMessages } from "../common/constants";
 
 const recruiterRoute: Router = Router();
 
+// recruiterRoute.get(route.recruiter.addJob, (req: Request, res: Response) => {
+//   res.send("This is add page");
+// });
+
 // Recruiter Post
-recruiterRoute.post(route.recruiter.addJob, async (req: any, res: any) => {
-  const { name, description, image } = req.body;
+recruiterRoute.post(
+  route.recruiter.addJob,
+  async (req: Request, res: Response) => {
+    const {
+      name,
+      description,
+      salary,
+      location,
+      experience,
+      deadline,
+      post_by,
+    } = req.body;
 
-  const newJob: any = {
-    jobId: uuidv4(),
-    name,
-    description,
-    image,
-  };
+    const newJob: any = {
+      id: Date.now(),
+      name,
+      description,
+      salary,
+      location,
+      experience,
+      deadline,
+      post_by,
+    };
 
-  try {
-    await insertJobToDB(newJob);
-    res.sendStatus(200);
-  } catch {
-    res.send(statusMessages[404]).sendStatus(404);
+    try {
+      console.log("NEW JOB", newJob);
+
+      console.log("Went to insert into the database");
+      const isInserted = await insertJobToDB(newJob);
+      console.log("Insert successfully done into the database", isInserted);
+      return res.sendStatus(200);
+    } catch (err) {
+      return res.send(err).sendStatus(404);
+    }
   }
-});
+);
 
 export { recruiterRoute };

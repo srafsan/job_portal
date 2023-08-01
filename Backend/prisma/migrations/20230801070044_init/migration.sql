@@ -14,7 +14,7 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `BlackListToken` (
     `tokenId` INTEGER NOT NULL AUTO_INCREMENT,
-    `token` TEXT NOT NULL,
+    `token` LONGTEXT NOT NULL,
 
     PRIMARY KEY (`tokenId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -27,7 +27,7 @@ CREATE TABLE `Jobs` (
     `salary` INTEGER NOT NULL,
     `location` VARCHAR(100) NOT NULL,
     `experience` INTEGER NOT NULL,
-    `deadline` DATETIME(3) NOT NULL,
+    `deadline` VARCHAR(250) NOT NULL,
     `post_by` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
