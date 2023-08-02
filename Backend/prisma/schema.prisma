@@ -11,13 +11,12 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       BigInt @id
   name     String @db.VarChar(50)
   email    String @unique @db.VarChar(50)
   password String @db.VarChar(50)
   role     Int
   sid      String @default(uuid())
-  Jobs     Jobs[]
 }
 
 model BlackListToken {
@@ -26,13 +25,12 @@ model BlackListToken {
 }
 
 model Jobs {
-  id          Int    @id
+  id          BigInt @id
   name        String @db.VarChar(30)
   description String @db.VarChar(255)
   salary      Int
   location    String @db.VarChar(100)
   experience  Int /// This is in years
   deadline    String @db.VarChar(250)
-  post_by     Int
-  email       User   @relation(fields: [post_by], references: [id])
+  post_by     BigInt
 }

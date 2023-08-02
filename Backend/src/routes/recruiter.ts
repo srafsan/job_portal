@@ -1,5 +1,5 @@
-import express, { Request, Response, Router } from "express";
-import { v4 as uuidv4 } from "uuid";
+import express, { NextFunction, Request, Response, Router } from "express";
+import cors from "cors";
 
 import route from "../common/routeNames";
 import { insertJobToDB } from "../services/dbServices";
@@ -10,10 +10,19 @@ const recruiterRoute: Router = Router();
 //   res.send("This is add page");
 // });
 
+const corsOption = {
+  origin: true,
+  methods: "GET, PUT",
+  credential: true,
+  maxAge: 10,
+};
+
 // Recruiter Post
+recruiterRoute.options(route.recruiter.addJob, cors(corsOption));
 recruiterRoute.post(
   route.recruiter.addJob,
-  async (req: Request, res: Response) => {
+  cors(corsOption),
+  async (req: Request, res: Response, next: NextFunction) => {
     const {
       name,
       description,
@@ -31,20 +40,11 @@ recruiterRoute.post(
       salary,
       location,
       experience,
-      deadline,
+      deadline: JSON.parse(deadline),
       post_by,
     };
-
-    try {
-      console.log("NEW JOB", newJob);
-
-      console.log("Went to insert into the database");
-      const isInserted = await insertJobToDB(newJob);
-      console.log("Insert successfully done into the database", isInserted);
-      return res.sendStatus(200);
-    } catch (err) {
-      return res.send(err).sendStatus(404);
-    }
+    await insertJobToDB(newJob);
+    return res.sendStatus(200);
   }
 );
 

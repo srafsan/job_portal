@@ -1,8 +1,7 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { Role } from "./constants";
 
 export interface IAuthProvider {
-  id: number;
+  id: bigint;
   name: string;
   email: string;
   password: string;
