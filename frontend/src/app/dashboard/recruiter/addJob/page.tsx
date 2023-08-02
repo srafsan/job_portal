@@ -44,6 +44,8 @@ const RecruiterPage = () => {
       post_by: 1,
     };
 
+    console.log("Job Data", jobData);
+
     try {
       const res = await axios.post(
         "http://localhost:3001/dashboard/recruiter/addJob",
@@ -110,7 +112,13 @@ const RecruiterPage = () => {
                 type="number"
                 {...register("experience", { required: true })}
               />
-              <Controller
+              <TextField
+                label="Deadline"
+                variant="outlined"
+                type="date"
+                {...register("deadline", { required: true })}
+              />
+              {/* <Controller
                 name="deadline"
                 control={control}
                 rules={{ required: "Deadline is required" }}
@@ -122,7 +130,7 @@ const RecruiterPage = () => {
                     error={fieldState.error}
                   />
                 )}
-              />
+              /> */}
               <Button type="submit" variant="contained" color="primary">
                 Add Job
               </Button>
