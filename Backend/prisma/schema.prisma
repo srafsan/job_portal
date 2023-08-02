@@ -25,7 +25,7 @@ model BlackListToken {
 }
 
 model Jobs {
-  id          BigInt @id
+  id          Int    @id @default(autoincrement())
   name        String @db.VarChar(30)
   description String @db.VarChar(255)
   salary      Int

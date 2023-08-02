@@ -32,6 +32,12 @@ export async function findIntoDB(
   return isPresent;
 }
 
+export async function findAllJobs() {
+  const jobs = await prisma.jobs.findMany();
+
+  return jobs;
+}
+
 export async function authProvider(
   token: string
 ): Promise<IAuthProvider | null> {

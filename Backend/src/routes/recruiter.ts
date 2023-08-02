@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response, Router } from "express";
 import cors from "cors";
 
 import route from "../common/routeNames";
-import { insertJobToDB } from "../services/dbServices";
+import { findAllJobs, insertJobToDB } from "../services/dbServices";
 
 const recruiterRoute: Router = Router();
 
@@ -10,18 +10,9 @@ const recruiterRoute: Router = Router();
 //   res.send("This is add page");
 // });
 
-const corsOption = {
-  origin: true,
-  methods: "GET, PUT",
-  credential: true,
-  maxAge: 10,
-};
-
-// Recruiter Post
-recruiterRoute.options(route.recruiter.addJob, cors(corsOption));
+// Recruiter add job
 recruiterRoute.post(
   route.recruiter.addJob,
-  cors(corsOption),
   async (req: Request, res: Response, next: NextFunction) => {
     const {
       name,
@@ -45,6 +36,21 @@ recruiterRoute.post(
     };
     await insertJobToDB(newJob);
     return res.sendStatus(200);
+  }
+);
+
+// recruiter manage jobs
+recruiterRoute.get(
+  route.recruiter.manageJobs,
+  async (req: Request, res: Response) => {
+    const jobs = await findAllJobs();
+    const j = JSON.parse(
+      JSON.stringify(
+        jobs,
+        (key, value) => (typeof value === "bigint" ? value.toString() : value) // return everything else unchanged
+      )
+    );
+    res.json(j);
   }
 );
 
