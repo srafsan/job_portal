@@ -6,6 +6,7 @@ import {
   insertJobToDB,
   updateJobOnDB,
 } from "../services/dbServices";
+import { RecruiterMiddleware } from "../middleware/common";
 
 const recruiterRoute: Router = Router();
 
@@ -44,6 +45,7 @@ recruiterRoute.post(
 // recruiter manage jobs
 recruiterRoute.get(
   route.recruiter.manageJobs,
+  RecruiterMiddleware,
   async (req: Request, res: Response) => {
     const jobs = await findAllJobs();
     const updatedJobs = JSON.parse(

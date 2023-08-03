@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import jwt, { ITokenPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import route from "../common/routeNames";
 import { findIntoDB, insertUserToDB, insertJWT } from "../services/dbServices";
 import { appConfig } from "../config/appConfig";
-import verifyJWT, { getToken } from "../middleware/verifyJWT";
+import verifyJWT from "../middleware/verifyJWT";
 import { getUserName, getUserNameWithEmail } from "../services/authService";
 import { tokenGenerate } from "../services/jwtServices";
 import {
@@ -45,13 +45,28 @@ authRouter.post("/token", (req: Request, res: Response) => {
   );
 });
 
+authRouter.get(route.auth.login, (req: Request, res: Response) => {
+  res.send(
+    `<h1>Login</h1>
+        <form method="post" action=${route.auth.login}>
+          <input type="text" name="username" placeholder="Username" required/>
+          <input type="password" name="password" placeholder="password" required/>
+          <input type="submit" />
+        </form>
+        <a href=${route.auth.signup}>Register</a>
+        `
+  );
+});
+
 // Login Post
 authRouter.post(route.auth.login, async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const user = await findIntoDB(email, password);
 
   if (!user) {
-    return res.send(statusMessages[404]).sendStatus(404);
+    console.log("Users does not exist");
+
+    return res.sendStatus(404);
   } else {
     const payloadToken: ITokenPayload = {
       sid: user.sid,
@@ -69,13 +84,28 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
 
     await insertJWT(userInfo);
 
-    res.cookie("accessToken", accessToken, { httpOnly: true });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true });
+    res.cookie("accessToken", accessToken);
+    res.cookie("refreshToken", refreshToken);
 
-    if (user.role == 1) return res.send("admin");
-    else if (user.role == 2) return res.send("recruiter");
-    else if (user.role == 3) return res.send("applicant");
-    else res.send(statusMessages[404]).sendStatus(404);
+    if (user.role == 1)
+      return res.send({
+        status: 200,
+        role: "admin",
+        token: { accessToken, refreshToken },
+      });
+    else if (user.role == 2)
+      return res.send({
+        status: 200,
+        role: "recruiter",
+        token: { accessToken, refreshToken },
+      });
+    else if (user.role == 3)
+      return res.send({
+        status: 200,
+        role: "applicant",
+        token: { accessToken, refreshToken },
+      });
+    else return res.sendStatus(404);
   }
 });
 
@@ -89,21 +119,22 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
 
     if (!exits) {
       const newUser: any = {
-        sid: uuidv4(),
+        id: Date.now(),
         name: name,
         email: email,
         password: password,
         role: Role.applicant,
+        sid: uuidv4(),
       };
 
       await insertUserToDB(newUser);
 
-      res.sendStatus(200);
+      return res.sendStatus(200);
     } else {
-      res.send("User Exists");
+      return res.send("User Exists");
     }
   } else {
-    res.send("no data found").status(301);
+    return res.send("no data found").status(301);
   }
 });
 
