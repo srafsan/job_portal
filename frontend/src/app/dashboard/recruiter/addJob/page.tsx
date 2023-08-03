@@ -2,7 +2,7 @@
 "use client";
 import React from "react";
 import axios from "axios";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Button,
   Grid,
@@ -11,27 +11,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import DatePickerFormField from "@/components/DatePickerFormField/DatePickerFormField";
-
-type Inputs = {
-  name: string;
-  description: string;
-  salary: string;
-  location: string;
-  experience: number;
-  deadline: Date;
-};
+import { IInputs } from "@/utils/interfaces";
 
 const RecruiterPage = () => {
   const {
     register,
-    control,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<IInputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<IInputs> = async (data) => {
     const { name, description, salary, location, experience, deadline } = data;
 
     const jobData = {
@@ -44,15 +33,11 @@ const RecruiterPage = () => {
       post_by: 1,
     };
 
-    console.log("Job Data", jobData);
-
     try {
       const res = await axios.post(
         "http://localhost:3001/dashboard/recruiter/addJob",
         jobData
       );
-
-      console.log("Add Job Res", res);
 
       if (res.status === 200) {
         alert("Job Added Successfully");
@@ -118,19 +103,6 @@ const RecruiterPage = () => {
                 type="date"
                 {...register("deadline", { required: true })}
               />
-              {/* <Controller
-                name="deadline"
-                control={control}
-                rules={{ required: "Deadline is required" }}
-                render={({ field, fieldState }) => (
-                  <DatePickerFormField
-                    label="Deadline"
-                    value={field.value}
-                    onChange={(date) => field.onChange(date)}
-                    error={fieldState.error}
-                  />
-                )}
-              /> */}
               <Button type="submit" variant="contained" color="primary">
                 Add Job
               </Button>

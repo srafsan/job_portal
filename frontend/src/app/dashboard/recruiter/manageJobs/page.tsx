@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { Jobs } from "./interface";
 import ManageJobsTable from "./ManageJobsTable";
+import { IJobs } from "@/utils/interfaces";
 
 const ManageJobs = () => {
-  const [jobs, setJobs] = useState<Jobs[]>([]);
+  const [jobs, setJobs] = useState<IJobs[]>([]);
 
   useEffect(() => {
     async function fetchJobs() {

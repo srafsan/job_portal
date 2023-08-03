@@ -1,16 +1,30 @@
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { Button, Stack } from "@mui/material";
+"use client";
+import { useState } from "react";
+import {
+  Button,
+  Stack,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
-import { Jobs } from "./interface";
+import UpdateJobModal from "./UpdateJobModal";
+import { IJobs } from "@/utils/interfaces";
 
-export default function ManageJobsTable({ jobs }: { jobs: Jobs[] }) {
+export default function ManageJobsTable({ jobs }: { jobs: IJobs[] }) {
+  const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+
+  const handleOpen = (jobId: number) => {
+    setSelectedJobId(jobId);
+  };
+  const handleClose = () => {
+    setSelectedJobId(null);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -28,7 +42,7 @@ export default function ManageJobsTable({ jobs }: { jobs: Jobs[] }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {jobs?.map((job: any) => (
+          {jobs?.map((job: IJobs) => (
             <TableRow
               key={job.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -47,7 +61,11 @@ export default function ManageJobsTable({ jobs }: { jobs: Jobs[] }) {
               <TableCell align="center">{job.post_by}</TableCell>
               <TableCell align="center">
                 <Stack spacing={2}>
-                  <Button variant="contained" color="info">
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={() => handleOpen(job.id)}
+                  >
                     Update
                   </Button>
                 </Stack>
@@ -56,6 +74,13 @@ export default function ManageJobsTable({ jobs }: { jobs: Jobs[] }) {
           ))}
         </TableBody>
       </Table>
+      {selectedJobId !== null && (
+        <UpdateJobModal
+          open={true}
+          handleClose={handleClose}
+          job={jobs.find((job) => job.id === selectedJobId)}
+        />
+      )}
     </TableContainer>
   );
 }
