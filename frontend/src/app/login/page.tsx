@@ -48,15 +48,28 @@ const LoginPage = () => {
       password,
     };
 
-    const URL = "http://localhost:3001/login";
-    const res = await axios.post(URL, userData);
+    try {
+      console.log("Login Start");
+      const URL = "http://localhost:3001/login";
+      const res = await axios.post(URL, userData);
+      console.log("Login end");
 
-    console.log("Login", res.status);
-    if (res.status === 200) {
-      alert("Login Successful");
-      router.push("/dashboard");
-    } else {
-      alert("Wrong Username or password");
+      if (res.status == 200) {
+        alert("Login Successful");
+
+        const { token } = res.data;
+
+        console.log(token);
+
+        document.cookie = `accessToken=${token.accessToken}; path=/`;
+        document.cookie = `refreshToken=${token.refreshToken}; path=/`;
+
+        router.push("/dashboard");
+      } else {
+        alert("Wrong Username or password");
+      }
+    } catch {
+      alert("Error while login the user data");
     }
   };
 

@@ -64,7 +64,7 @@ const RegisterPage = () => {
         router.push("/login");
       }
     } catch {
-      console.log("Error registering the user data");
+      alert("Error registering the user data");
     }
   };
 
