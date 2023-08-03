@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 
 import route from "../common/routeNames";
-import { findAllJobs, insertJobToDB } from "../services/dbServices";
+import {
+  findAllJobs,
+  insertJobToDB,
+  updateJobOnDB,
+} from "../services/dbServices";
 
 const recruiterRoute: Router = Router();
 
@@ -49,6 +53,41 @@ recruiterRoute.get(
       )
     );
     res.json(updatedJobs);
+  }
+);
+
+// recruiter update job
+recruiterRoute.patch(
+  route.recruiter.updateJob,
+  async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const {
+      name,
+      description,
+      salary,
+      location,
+      experience,
+      deadline,
+      post_by,
+    } = req.body;
+
+    const updatedJob: any = {
+      name,
+      description,
+      salary,
+      location,
+      experience,
+      deadline: JSON.parse(deadline),
+      post_by,
+    };
+
+    const response = await updateJobOnDB(id, updatedJob);
+
+    if (response) {
+      return res.sendStatus(200);
+    } else {
+      return res.sendStatus(404);
+    }
   }
 );
 

@@ -21,6 +21,20 @@ export async function insertJobToDB(jobInfo: any): Promise<Boolean> {
   return !!job;
 }
 
+export async function updateJobOnDB(
+  jobId: number,
+  data: any
+): Promise<Boolean> {
+  const job = await prisma.jobs.update({
+    where: {
+      id: jobId,
+    },
+    data,
+  });
+
+  return !!job;
+}
+
 export async function findIntoDB(
   userEmail: string,
   userPassword: string
