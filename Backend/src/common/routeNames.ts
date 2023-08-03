@@ -18,7 +18,7 @@ const route = {
   },
   recruiter: {
     addJob: `${recruiter}/addJob`,
-    manageJobs: `${recruiter}/manage_jobs/:job_id/users/:user_id`,
+    manageJobs: `${recruiter}/manage_jobs`,
     viewApplicants: `${recruiter}/viewApplicants`,
   },
 };

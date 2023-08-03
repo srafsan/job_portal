@@ -21,7 +21,7 @@ CREATE TABLE `BlackListToken` (
 
 -- CreateTable
 CREATE TABLE `Jobs` (
-    `id` BIGINT NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(30) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
     `salary` INTEGER NOT NULL,

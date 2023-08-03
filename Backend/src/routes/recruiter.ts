@@ -1,5 +1,4 @@
-import express, { NextFunction, Request, Response, Router } from "express";
-import cors from "cors";
+import { NextFunction, Request, Response, Router } from "express";
 
 import route from "../common/routeNames";
 import { findAllJobs, insertJobToDB } from "../services/dbServices";
@@ -25,7 +24,6 @@ recruiterRoute.post(
     } = req.body;
 
     const newJob: any = {
-      id: Date.now(),
       name,
       description,
       salary,
@@ -44,13 +42,13 @@ recruiterRoute.get(
   route.recruiter.manageJobs,
   async (req: Request, res: Response) => {
     const jobs = await findAllJobs();
-    const j = JSON.parse(
+    const updatedJobs = JSON.parse(
       JSON.stringify(
         jobs,
         (key, value) => (typeof value === "bigint" ? value.toString() : value) // return everything else unchanged
       )
     );
-    res.json(j);
+    res.json(updatedJobs);
   }
 );
 
