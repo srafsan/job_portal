@@ -18,6 +18,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
+import Cookie from "js-cookie";
 
 type LoginInputs = {
   email: string;
@@ -49,20 +50,15 @@ const LoginPage = () => {
     };
 
     try {
-      console.log("Login Start");
-      const URL = "http://localhost:3001/login";
+      const URL = `http://localhost:3001/login`;
       const res = await axios.post(URL, userData);
-      console.log("Login end");
 
       if (res.status == 200) {
         alert("Login Successful");
-
         const { token } = res.data;
 
-        console.log(token);
-
-        document.cookie = `accessToken=${token.accessToken}; path=/`;
-        document.cookie = `refreshToken=${token.refreshToken}; path=/`;
+        Cookie.set("accessToken", token.accessToken);
+        Cookie.set("refreshToken", token.refreshToken);
 
         router.push("/dashboard");
       } else {
