@@ -1,31 +1,43 @@
 import { NextFunction, Request, Response } from "express";
 import { authProvider } from "../services/dbServices";
-
-export const getToken = (req: Request) => {
-  return req.cookies.refreshToken;
-};
+import jwt from "jsonwebtoken";
+import { appConfig } from "../config/appConfig";
+import { decode } from "punycode";
 
 const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.cookies.accessToken;
+  const authorization = req.headers.authorization;
 
-  if (!accessToken) {
+  if (!authorization) {
     return res
       .status(401)
       .json({ error: true, message: "Unauthorized access" });
   }
 
   try {
-    const user = await authProvider(accessToken);
+    const accessToken: string = authorization.split(" ")[1];
+    // const user = await authProvider(accessToken);
 
-    if (!user) {
-      return res
-        .status(401)
-        .json({ error: true, message: "Unauthorized access" });
-    }
+    jwt.verify(accessToken, appConfig.accessTokenSecret, (error, decoded) => {
+      if (error) {
+        return res
+          .status(403)
+          .send({ error: true, message: "Unauthorized Access" });
+      }
 
-    (<any>req)["user"] = user;
+      (<any>req)["decoded"] = decoded;
 
-    next();
+      next();
+    });
+
+    // if (!user) {
+    //   return res
+    //     .status(401)
+    //     .json({ error: true, message: "Unauthorized access" });
+    // }
+
+    // (<any>req)["user"] = user;
+
+    // next();
   } catch (err) {
     console.error("Error verifying JWT:", err);
     return res

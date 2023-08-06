@@ -14,7 +14,6 @@ import {
   accessTokenTimer,
   refreshTokenTimer,
   refreshTokens,
-  statusMessages,
 } from "../common/constants";
 
 dotenv.config();
@@ -45,19 +44,6 @@ authRouter.post("/token", (req: Request, res: Response) => {
   );
 });
 
-authRouter.get(route.auth.login, (req: Request, res: Response) => {
-  res.send(
-    `<h1>Login</h1>
-        <form method="post" action=${route.auth.login}>
-          <input type="text" name="username" placeholder="Username" required/>
-          <input type="password" name="password" placeholder="password" required/>
-          <input type="submit" />
-        </form>
-        <a href=${route.auth.signup}>Register</a>
-        `
-  );
-});
-
 // Login Post
 authRouter.post(route.auth.login, async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -83,9 +69,6 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
     };
 
     await insertJWT(userInfo);
-
-    res.cookie("accessToken", accessToken);
-    res.cookie("refreshToken", refreshToken);
 
     if (user.role == 1)
       return res.send({
@@ -161,12 +144,5 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
 //     res.sendStatus(200);
 //   }
 // );
-
-// get user
-authRouter.get("/get-user", [verifyJWT], (req: Request, res: Response) => {
-  const username = getUserName(req.user);
-  const full = getUserNameWithEmail(username, req.user.email);
-  res.json(full);
-});
 
 export { authRouter };
