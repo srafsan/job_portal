@@ -9,6 +9,7 @@ import { dashboardRouter } from "./src/routes/dashboard";
 import { recruiterRoute } from "./src/routes/recruiter";
 import { findAllJobs } from "./src/services/dbServices";
 import verifyJWT from "./src/middleware/verifyJWT";
+import { DecodeJwtPayload } from "./src/common/interfaces";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -31,6 +32,7 @@ app.use(route.home.main, dashboardRouter);
 app.use(route.home.main, recruiterRoute);
 
 app.get("/getjobs", verifyJWT, async (req: Request, res: Response) => {
+  const decode: DecodeJwtPayload = req.decoded;
   const jobs = await findAllJobs();
   const updatedJobs = JSON.parse(
     JSON.stringify(

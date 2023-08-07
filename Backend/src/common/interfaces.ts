@@ -19,3 +19,20 @@ declare module "jsonwebtoken" {
 export interface AuthRequest extends Request {
   user: IAuthProvider;
 }
+
+export interface DecodeJwtPayload {
+  sid: string;
+  name: string;
+  email: string;
+  role: number;
+  iat: number;
+  exp: number;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      decoded: DecodeJwtPayload;
+    }
+  }
+}
