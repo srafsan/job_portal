@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import axios from "axios";
 import {
   Grid,
   Paper,
@@ -16,9 +15,8 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
-import api from "@/utils/api";
 import { useRouter } from "next/navigation";
-import Cookie from "js-cookie";
+import { useGlobalContext } from "../Context/store";
 
 type LoginInputs = {
   email: string;
@@ -34,6 +32,8 @@ const paperStyle = {
 
 const LoginPage = () => {
   const router = useRouter();
+  const { loginFunc } = useGlobalContext();
+
   const {
     register,
     handleSubmit,
@@ -44,29 +44,7 @@ const LoginPage = () => {
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     const { email, password } = data;
 
-    const userData = {
-      email,
-      password,
-    };
-
-    try {
-      const URL = `http://localhost:3001/login`;
-      const res = await axios.post(URL, userData);
-
-      if (res.status == 200) {
-        alert("Login Successful");
-        const { token } = res.data;
-
-        Cookie.set("accessToken", token.accessToken);
-        Cookie.set("refreshToken", token.refreshToken);
-
-        router.push("/dashboard");
-      } else {
-        alert("Wrong Username or password");
-      }
-    } catch {
-      alert("Error while login the user data");
-    }
+    loginFunc(email, password);
   };
 
   return (

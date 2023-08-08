@@ -1,6 +1,7 @@
 import route from "../common/routeNames";
 import { Request, Response, Router } from "express";
 import { getAllUsers } from "../services/dbServices";
+import { RecruiterMiddleware } from "../middleware/common";
 
 const rootRouter: Router = Router();
 rootRouter.get(route.home.main, (req: Request, res: Response) => {
@@ -11,11 +12,6 @@ rootRouter.get(route.home.main, (req: Request, res: Response) => {
         <a href=${route.auth.signup}>Sign Up</a>
       </div>`
   );
-});
-
-rootRouter.get("/users", async (req: Request, res: Response) => {
-  const users = await getAllUsers();
-  res.send(users);
 });
 
 export { rootRouter };

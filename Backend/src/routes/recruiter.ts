@@ -10,10 +10,6 @@ import { RecruiterMiddleware } from "../middleware/common";
 
 const recruiterRoute: Router = Router();
 
-// recruiterRoute.get(route.recruiter.addJob, (req: Request, res: Response) => {
-//   res.send("This is add page");
-// });
-
 // Recruiter add job
 recruiterRoute.post(
   route.recruiter.addJob,
