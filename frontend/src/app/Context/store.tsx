@@ -11,32 +11,31 @@ import {
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
 
-type DataType = {
-  firstName: string;
-};
-
 interface ContextProps {
-  userId: string;
+  userRole: string;
   setUserId: Dispatch<SetStateAction<string>>;
-  data: DataType[];
-  setData: Dispatch<SetStateAction<DataType[]>>;
   loginFunc: (...args: any[]) => any;
+  registerFunc: (...args: any[]) => any;
+  logoutFunc: (...args: any[]) => any;
 }
 
 const GlobalContext = createContext<ContextProps>({
-  userId: "",
+  userRole: "",
   setUserId: (): string => "",
-  data: [],
-  setData: (): DataType[] => [],
   loginFunc: function (...args: any[]) {
+    throw new Error("Function not implemented.");
+  },
+  registerFunc: function (...args: any[]) {
+    throw new Error("Function not implemented.");
+  },
+  logoutFunc: function (...args: any[]) {
     throw new Error("Function not implemented.");
   },
 });
 
 export const GlobalContextProvider = ({ children }: any) => {
   const router = useRouter();
-  const [userId, setUserId] = useState("");
-  const [data, setData] = useState<[] | DataType>([]);
+  const [userRole, setUserRole] = useState("");
 
   // Login
   const loginFunc = async (email: string, password: string) => {
@@ -51,8 +50,9 @@ export const GlobalContextProvider = ({ children }: any) => {
 
       if (res.status == 200) {
         alert("Login Successful");
-        const { token } = res.data;
+        const { token, role } = res.data;
 
+        setUserRole(role);
         Cookie.set("accessToken", token.accessToken);
         Cookie.set("refreshToken", token.refreshToken);
 
@@ -65,12 +65,43 @@ export const GlobalContextProvider = ({ children }: any) => {
     }
   };
 
+  // Registration
+  const registerFunc = async (
+    name: string,
+    email: string,
+    password: string
+  ) => {
+    const userData = {
+      name,
+      email,
+      password,
+    };
+
+    try {
+      const url = "http://localhost:3001/signup";
+      const res = await axios.post(url, userData);
+
+      if (res.status == 200) {
+        router.push("/login");
+      }
+    } catch {
+      alert("Error registering the user data");
+    }
+  };
+
+  // Logout
+  const logoutFunc = async () => {
+    Cookie.remove("accessToken");
+    Cookie.remove("refreshToken");
+
+    router.push("/");
+  };
+
   const userInfo: any = {
-    userId,
-    setUserId,
-    data,
-    setData,
+    userRole,
     loginFunc,
+    registerFunc,
+    logoutFunc,
   };
 
   return (

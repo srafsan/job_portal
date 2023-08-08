@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import InboxIcon from "@mui/icons-material/Inbox";
 import MailIcon from "@mui/icons-material/Mail";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useGlobalContext } from "../Context/store";
 
 const drawerWidth = 240;
 interface Props {
@@ -26,6 +28,7 @@ const DashboardLayout = (
   { children }: { children: React.ReactNode },
   props: Props
 ) => {
+  const { userRole } = useGlobalContext();
   const userOptions = {
     admin: {
       options: [
@@ -36,7 +39,6 @@ const DashboardLayout = (
           label: "Manage Payments",
           route: "/dashboard/admin/managePayments",
         },
-        // Add more options for the admin role if needed
       ],
     },
     recruiter: {
@@ -52,7 +54,6 @@ const DashboardLayout = (
           label: "View Applicants",
           route: "/dashboard/recruiter/viewApplicants",
         },
-        // Add more options for the recruiter role if needed
       ],
     },
     applicant: {
@@ -60,7 +61,6 @@ const DashboardLayout = (
         { id: 1, label: "View Profile", route: "/dashboard/user/profile" },
         { id: 2, label: "My Cart", route: "/dashboard/user/cart" },
         { id: 3, label: "Applied Jobs", route: "/dashboard/user/appliedJobs" },
-        // Add more options for the normal user role if needed
       ],
     },
   };
@@ -68,7 +68,6 @@ const DashboardLayout = (
   const utilsOptions = [
     { id: 1, label: "Home", route: "/" },
     { id: 2, label: "Jobs", route: "/jobs" },
-    { id: 3, label: "Logout", route: "/logout" },
   ];
 
   const { window } = props;
@@ -82,7 +81,7 @@ const DashboardLayout = (
     <div>
       <Divider />
       <List>
-        {userOptions.recruiter.options.map((user, index) => (
+        {userOptions[userRole].options.map((user, index) => (
           <ListItem key={user.id} disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -109,6 +108,17 @@ const DashboardLayout = (
             </ListItemButton>
           </ListItem>
         ))}
+        {/* Logout */}
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <Link href="/logout">
+              <ListItemText primary="Logout" />
+            </Link>
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );

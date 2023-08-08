@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
-import axios from "axios";
 import {
   Grid,
   Paper,
@@ -16,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import { useRouter } from "next/navigation";
+import { useGlobalContext } from "../Context/store";
 
 type SignupInputs = {
   name: string;
@@ -33,7 +32,7 @@ const paperStyle = {
 };
 
 const RegisterPage = () => {
-  const router = useRouter();
+  const { registerFunc } = useGlobalContext();
 
   const {
     register,
@@ -50,22 +49,7 @@ const RegisterPage = () => {
       return;
     }
 
-    const userData = {
-      name,
-      email,
-      password,
-    };
-
-    try {
-      const url = "http://localhost:3001/signup";
-      const res = await axios.post(url, userData);
-
-      if (res.status == 200) {
-        router.push("/login");
-      }
-    } catch {
-      alert("Error registering the user data");
-    }
+    await registerFunc(name, email, password);
   };
 
   return (

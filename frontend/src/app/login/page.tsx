@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useGlobalContext } from "../Context/store";
 
 type LoginInputs = {
@@ -31,7 +30,6 @@ const paperStyle = {
 };
 
 const LoginPage = () => {
-  const router = useRouter();
   const { loginFunc } = useGlobalContext();
 
   const {
@@ -44,7 +42,7 @@ const LoginPage = () => {
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     const { email, password } = data;
 
-    loginFunc(email, password);
+    await loginFunc(email, password);
   };
 
   return (
