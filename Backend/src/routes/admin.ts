@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { AdminMiddleware } from "../middleware/common";
-import { getAllUsers } from "../services/dbServices";
+import { findAllJobs, getAllUsers } from "../services/dbServices";
 import route from "../common/routeNames";
 
 const adminRoute: Router = Router();
@@ -18,6 +18,21 @@ adminRoute.get(
       )
     );
     res.send(updatedUsers);
+  }
+);
+
+adminRoute.get(
+  route.admin.manageJobs,
+  AdminMiddleware,
+  async (req: Request, res: Response) => {
+    const jobs = await findAllJobs();
+    const updatedJobs = JSON.parse(
+      JSON.stringify(jobs, (key, value) =>
+        typeof value == "bigint" ? value.toString() : value
+      )
+    );
+
+    res.send(updatedJobs);
   }
 );
 

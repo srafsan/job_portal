@@ -31,7 +31,7 @@ recruiterRoute.post(
       location,
       experience,
       deadline: JSON.parse(deadline),
-      post_by,
+      post_by: BigInt(post_by),
     };
     await insertJobToDB(newJob);
     return res.sendStatus(200);

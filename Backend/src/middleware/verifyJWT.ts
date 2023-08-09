@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { authProvider } from "../services/dbServices";
 import jwt from "jsonwebtoken";
 import { appConfig } from "../config/appConfig";
-import { decode } from "punycode";
 
 const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
   const authorization = req.headers.authorization;
@@ -16,8 +14,6 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const accessToken: string = authorization.split(" ")[1];
 
-    // const user = await authProvider(accessToken);
-
     jwt.verify(accessToken, appConfig.accessTokenSecret, (error, decoded) => {
       if (error) {
         return res
@@ -29,16 +25,6 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
 
       next();
     });
-
-    // if (!user) {
-    //   return res
-    //     .status(401)
-    //     .json({ error: true, message: "Unauthorized access" });
-    // }
-
-    // (<any>req)["user"] = user;
-
-    // next();
   } catch (err) {
     console.error("Error verifying JWT:", err);
     return res

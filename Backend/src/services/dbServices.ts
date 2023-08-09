@@ -65,45 +65,16 @@ export async function authProvider(
   return user;
 }
 
-export async function insertJWT(userInfo: any): Promise<Boolean> {
-  const user = await prisma.blackListToken.create({ data: userInfo });
+export async function insertBlackListJWT(token: string): Promise<Boolean> {
+  const isBlackListed = await prisma.blackListToken.create({ data: { token } });
 
-  return !!user;
+  return !!isBlackListed;
 }
 
-export async function findJWT(token: string): Promise<any> {
+export async function findBlackListJWT(token: string): Promise<Boolean> {
   const isPresent = await prisma.blackListToken.findFirst({
     where: { token: token },
   });
 
-  return isPresent;
+  return !!isPresent;
 }
-
-export async function deleteJWT(token: string): Promise<Boolean> {
-  const isDeleted = await findJWT(token);
-
-  if (!isDeleted) {
-    console.log("Refresh Token is not in the database");
-    return false;
-  }
-
-  await prisma.blackListToken.delete({
-    where: {
-      tokenId: isDeleted?.tokenId,
-    },
-  });
-
-  console.log("Refresh Token is deleted successfully");
-
-  return !!isDeleted;
-}
-
-// export async function deleteAllJWT(email: string): Promise<Boolean> {
-//   const isDeleted = await prisma.blackListToken.deleteMany({
-//     where: {
-//       userEmail: email,
-//     },
-//   });
-
-//   return !!isDeleted;
-// }

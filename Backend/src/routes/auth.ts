@@ -4,7 +4,12 @@ import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 
 import route from "../common/routeNames";
-import { findIntoDB, insertUserToDB, insertJWT } from "../services/dbServices";
+import {
+  findBlackListJWT,
+  findIntoDB,
+  insertBlackListJWT,
+  insertUserToDB,
+} from "../services/dbServices";
 import { appConfig } from "../config/appConfig";
 import verifyJWT from "../middleware/verifyJWT";
 import { getUserName, getUserNameWithEmail } from "../services/authService";
@@ -50,8 +55,6 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
   const user = await findIntoDB(email, password);
 
   if (!user) {
-    console.log("Users does not exist");
-
     return res.sendStatus(404);
   } else {
     const payloadToken: ITokenPayload = {
@@ -63,30 +66,71 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
 
     const accessToken = tokenGenerate(payloadToken, accessTokenTimer);
     const refreshToken = tokenGenerate(payloadToken, refreshTokenTimer);
+    const isBlackListed = await findBlackListJWT(refreshToken);
 
-    const userInfo = {
-      token: refreshToken,
-    };
-
-    await insertJWT(userInfo);
+    if (isBlackListed) {
+      return res.status(404).send("Blacklisted");
+    }
 
     if (user.role == 1)
       return res.send({
+        userId: user.id.toString(),
         status: 200,
         role: "admin",
         token: { accessToken, refreshToken },
+        options: [
+          {
+            id: 1,
+            label: "Manage Users",
+            route: "/dashboard/admin/manageUsers",
+          },
+          {
+            id: 2,
+            label: "Manage Jobs",
+            route: "/dashboard/admin/manageJobs",
+          },
+          {
+            id: 3,
+            label: "Manage Payments",
+            route: "/dashboard/admin/managePayments",
+          },
+        ],
       });
     else if (user.role == 2)
       return res.send({
+        userId: user.id.toString(),
         status: 200,
         role: "recruiter",
         token: { accessToken, refreshToken },
+        options: [
+          { id: 1, label: "Add Job", route: "/dashboard/recruiter/addJob" },
+          {
+            id: 2,
+            label: "Manage Jobs",
+            route: "/dashboard/recruiter/manageJobs",
+          },
+          {
+            id: 3,
+            label: "View Applicants",
+            route: "/dashboard/recruiter/viewApplicants",
+          },
+        ],
       });
     else if (user.role == 3)
       return res.send({
+        userId: user.id.toString(),
         status: 200,
         role: "applicant",
         token: { accessToken, refreshToken },
+        options: [
+          { id: 1, label: "View Profile", route: "/dashboard/user/profile" },
+          { id: 2, label: "My Cart", route: "/dashboard/user/cart" },
+          {
+            id: 3,
+            label: "Applied Jobs",
+            route: "/dashboard/user/appliedJobs",
+          },
+        ],
       });
     else return res.sendStatus(404);
   }
@@ -110,9 +154,13 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
         sid: uuidv4(),
       };
 
-      await insertUserToDB(newUser);
+      const response = await insertUserToDB(newUser);
 
-      return res.sendStatus(200);
+      if (response) {
+        return res.sendStatus(200);
+      } else {
+        return res.sendStatus(401);
+      }
     } else {
       return res.send("User Exists");
     }
@@ -122,27 +170,17 @@ authRouter.post(route.auth.signup, async (req: Request, res: Response) => {
 });
 
 // Logout
-// authRouter.delete(
-//   route.auth.logout,
-//   verifyJWT,
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const token = getToken(req);
-//     console.log(token);
+authRouter.post(
+  route.auth.logout,
+  verifyJWT,
+  async (req: Request, res: Response) => {
+    const token = req.body.refreshToken;
+    console.log("Logout", token);
 
-//     await deleteJWT(token);
+    await insertBlackListJWT(token);
 
-//     res.sendStatus(200);
-//   }
-// );
-
-// authRouter.delete(
-//   route.auth.logoutAll,
-//   verifyJWT,
-//   async (req: Request, res: Response) => {
-//     await deleteAllJWT(req.user.email);
-
-//     res.sendStatus(200);
-//   }
-// );
+    res.sendStatus(200);
+  }
+);
 
 export { authRouter };
