@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import {
+  Button,
   Divider,
   List,
   ListItem,
@@ -28,7 +29,7 @@ const DashboardLayout = (
   { children }: { children: React.ReactNode },
   props: Props
 ) => {
-  const { userOptions } = useGlobalContext();
+  const { userOptions, logoutFunc } = useGlobalContext();
 
   const utilsOptions = [
     { id: 1, label: "Home", route: "/" },
@@ -79,9 +80,9 @@ const DashboardLayout = (
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>
-            <Link href="/logout">
-              <ListItemText primary="Logout" />
-            </Link>
+            <ListItemIcon>
+              <ListItemText onClick={logoutFunc} primary="Logout" />
+            </ListItemIcon>
           </ListItemButton>
         </ListItem>
       </List>

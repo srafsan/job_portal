@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { IInputs } from "@/utils/interfaces";
-import apiClient from "@/utils/apiClient";
+import apiClient, { setClientAuthHeader } from "@/utils/apiClient";
 import { useGlobalContext } from "@/app/Context/store";
 
 const RecruiterPage = () => {
@@ -36,6 +36,7 @@ const RecruiterPage = () => {
     };
 
     try {
+      setClientAuthHeader();
       const res = await apiClient.post("/dashboard/recruiter/add_job", jobData);
 
       if (res.status === 200) {

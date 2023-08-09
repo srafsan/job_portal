@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from "react";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import apiClient from "@/utils/apiClient";
+import apiClient, { setClientAuthHeader } from "@/utils/apiClient";
 
 interface ContextProps {
   userId: BigInt | null;
@@ -90,10 +90,16 @@ export const GlobalContextProvider = ({ children }: any) => {
 
   // Logout
   const logoutFunc = async () => {
-    Cookie.remove("accessToken");
-    Cookie.remove("refreshToken");
+    const refreshToken = Cookie.get("refreshToken");
+    setClientAuthHeader();
+    const response = await apiClient.post("/logout", { refreshToken });
 
-    router.push("/");
+    if (response.status === 200) {
+      Cookie.remove("accessToken");
+      Cookie.remove("refreshToken");
+
+      router.push("/");
+    }
   };
 
   const userInfo: any = {
