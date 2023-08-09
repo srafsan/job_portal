@@ -10,7 +10,8 @@ import {
   Button,
 } from "@mui/material";
 import { IInputs, IUpdateModal } from "@/utils/interfaces";
-import axios from "axios";
+import apiClient from "@/utils/apiClient";
+import { useGlobalContext } from "@/app/Context/store";
 
 const style = {
   position: "absolute" as "absolute",
@@ -25,6 +26,7 @@ const style = {
 };
 
 const UpdateJobModal = ({ open, handleClose, job }: IUpdateModal) => {
+  const { userId } = useGlobalContext();
   const {
     register,
     handleSubmit,
@@ -34,8 +36,6 @@ const UpdateJobModal = ({ open, handleClose, job }: IUpdateModal) => {
   const updateFunc: SubmitHandler<IInputs> = async (data) => {
     const { name, description, salary, location, experience, deadline } = data;
 
-    console.log("Update Data", data);
-
     const updatedJobData = {
       name,
       description,
@@ -43,12 +43,12 @@ const UpdateJobModal = ({ open, handleClose, job }: IUpdateModal) => {
       location,
       experience: Number(experience),
       deadline: JSON.stringify(deadline),
-      post_by: 1,
+      post_by: userId,
     };
 
     try {
-      const res = await axios.patch(
-        `http://localhost:3001/dashboard/recruiter/update_job/${job?.id}`,
+      const res = await apiClient.patch(
+        `/dashboard/recruiter/update_job/${job?.id}`,
         updatedJobData
       );
 

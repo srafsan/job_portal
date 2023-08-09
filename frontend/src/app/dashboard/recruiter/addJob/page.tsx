@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
-import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Button,
@@ -12,8 +11,11 @@ import {
   Typography,
 } from "@mui/material";
 import { IInputs } from "@/utils/interfaces";
+import apiClient from "@/utils/apiClient";
+import { useGlobalContext } from "@/app/Context/store";
 
 const RecruiterPage = () => {
+  const { userId } = useGlobalContext();
   const {
     register,
     handleSubmit,
@@ -30,14 +32,11 @@ const RecruiterPage = () => {
       location,
       experience: Number(experience),
       deadline: JSON.stringify(deadline),
-      post_by: 1,
+      post_by: userId,
     };
 
     try {
-      const res = await axios.post(
-        "http://localhost:3001/dashboard/recruiter/addJob",
-        jobData
-      );
+      const res = await apiClient.post("/dashboard/recruiter/add_job", jobData);
 
       if (res.status === 200) {
         alert("Job Added Successfully");

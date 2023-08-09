@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import apiClient from "@/utils/apiClient";
 
 interface ContextProps {
+  userId: BigInt | null;
   userRole: string;
   userOptions: any;
   loginFunc: (...args: any[]) => any;
@@ -14,6 +15,7 @@ interface ContextProps {
 }
 
 const GlobalContext = createContext<ContextProps>({
+  userId: null,
   userRole: "",
   userOptions: [],
   loginFunc: function (...args: any[]) {
@@ -29,6 +31,7 @@ const GlobalContext = createContext<ContextProps>({
 
 export const GlobalContextProvider = ({ children }: any) => {
   const router = useRouter();
+  const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState("");
   const [userOptions, setUserOptions] = useState([]);
 
@@ -44,8 +47,9 @@ export const GlobalContextProvider = ({ children }: any) => {
 
       if (res.status == 200) {
         alert("Login Successful");
-        const { token, role, options } = res.data;
+        const { userId, token, role, options } = res.data;
 
+        setUserId(userId);
         setUserRole(role);
         setUserOptions(options);
 
@@ -93,6 +97,7 @@ export const GlobalContextProvider = ({ children }: any) => {
   };
 
   const userInfo: any = {
+    userId,
     userRole,
     userOptions,
     loginFunc,

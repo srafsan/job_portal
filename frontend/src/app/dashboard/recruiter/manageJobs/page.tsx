@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 import ManageJobsTable from "./ManageJobsTable";
 import { IJobs } from "@/utils/interfaces";
+import apiClient from "@/utils/apiClient";
 
 const ManageJobs = () => {
   const [jobs, setJobs] = useState<IJobs[]>([]);
@@ -11,8 +11,8 @@ const ManageJobs = () => {
   useEffect(() => {
     async function fetchJobs() {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/dashboard/recruiter/manage_jobs"
+        const response = await apiClient.get(
+          "/dashboard/recruiter/manage_jobs"
         );
 
         setJobs(response.data);
