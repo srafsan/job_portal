@@ -1,19 +1,13 @@
 "use client";
 
-import axios from "axios";
-import {
-  createContext,
-  useContext,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from "react";
+import { createContext, useContext, useState } from "react";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
+import apiClient from "@/utils/apiClient";
 
 interface ContextProps {
   userRole: string;
-  setUserId: Dispatch<SetStateAction<string>>;
+  userOptions: any;
   loginFunc: (...args: any[]) => any;
   registerFunc: (...args: any[]) => any;
   logoutFunc: (...args: any[]) => any;
@@ -21,7 +15,7 @@ interface ContextProps {
 
 const GlobalContext = createContext<ContextProps>({
   userRole: "",
-  setUserId: (): string => "",
+  userOptions: [],
   loginFunc: function (...args: any[]) {
     throw new Error("Function not implemented.");
   },
@@ -36,6 +30,7 @@ const GlobalContext = createContext<ContextProps>({
 export const GlobalContextProvider = ({ children }: any) => {
   const router = useRouter();
   const [userRole, setUserRole] = useState("");
+  const [userOptions, setUserOptions] = useState([]);
 
   // Login
   const loginFunc = async (email: string, password: string) => {
@@ -45,14 +40,15 @@ export const GlobalContextProvider = ({ children }: any) => {
     };
 
     try {
-      const URL = `http://localhost:3001/login`;
-      const res = await axios.post(URL, userData);
+      const res = await apiClient.post("/login", userData);
 
       if (res.status == 200) {
         alert("Login Successful");
-        const { token, role } = res.data;
+        const { token, role, options } = res.data;
 
         setUserRole(role);
+        setUserOptions(options);
+
         Cookie.set("accessToken", token.accessToken);
         Cookie.set("refreshToken", token.refreshToken);
 
@@ -78,8 +74,7 @@ export const GlobalContextProvider = ({ children }: any) => {
     };
 
     try {
-      const url = "http://localhost:3001/signup";
-      const res = await axios.post(url, userData);
+      const res = await apiClient.post("/signup", userData);
 
       if (res.status == 200) {
         router.push("/login");
@@ -99,6 +94,7 @@ export const GlobalContextProvider = ({ children }: any) => {
 
   const userInfo: any = {
     userRole,
+    userOptions,
     loginFunc,
     registerFunc,
     logoutFunc,

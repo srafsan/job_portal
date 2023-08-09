@@ -28,42 +28,7 @@ const DashboardLayout = (
   { children }: { children: React.ReactNode },
   props: Props
 ) => {
-  const { userRole } = useGlobalContext();
-  const userOptions = {
-    admin: {
-      options: [
-        { id: 1, label: "Manage Users", route: "/dashboard/admin/manageUsers" },
-        { id: 2, label: "Manage Jobs", route: "/dashboard/admin/manageJobs" },
-        {
-          id: 3,
-          label: "Manage Payments",
-          route: "/dashboard/admin/managePayments",
-        },
-      ],
-    },
-    recruiter: {
-      options: [
-        { id: 1, label: "Add Job", route: "/dashboard/recruiter/addJob" },
-        {
-          id: 2,
-          label: "Manage Jobs",
-          route: "/dashboard/recruiter/manageJobs",
-        },
-        {
-          id: 3,
-          label: "View Applicants",
-          route: "/dashboard/recruiter/viewApplicants",
-        },
-      ],
-    },
-    applicant: {
-      options: [
-        { id: 1, label: "View Profile", route: "/dashboard/user/profile" },
-        { id: 2, label: "My Cart", route: "/dashboard/user/cart" },
-        { id: 3, label: "Applied Jobs", route: "/dashboard/user/appliedJobs" },
-      ],
-    },
-  };
+  const { userOptions } = useGlobalContext();
 
   const utilsOptions = [
     { id: 1, label: "Home", route: "/" },
@@ -81,7 +46,7 @@ const DashboardLayout = (
     <div>
       <Divider />
       <List>
-        {userOptions[userRole].options.map((user, index) => (
+        {userOptions.map((user: any, index: number) => (
           <ListItem key={user.id} disablePadding>
             <ListItemButton>
               <ListItemIcon>

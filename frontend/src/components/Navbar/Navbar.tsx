@@ -14,20 +14,19 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Link from "next/link";
+import { useGlobalContext } from "@/app/Context/store";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
+  const { userRole } = useGlobalContext();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  // const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorElUser(event.currentTarget);
-  // };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -42,23 +41,16 @@ function Navbar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
+          <Link
             href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+            style={{
+              fontSize: "1.5em",
+              fontWeight: "bold",
+              marginRight: "20px",
             }}
           >
-            <Link href="/">WikiRocket</Link>
-          </Typography>
+            WikiRocket
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -125,9 +117,13 @@ function Navbar() {
                 {page}
               </Button>
             ))}
-            <Button sx={{ my: 2, color: "white", display: "block" }}>
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
+            {userRole ? (
+              <Button sx={{ my: 2, color: "white", display: "block" }}>
+                <Link href={`/dashboard/${userRole}`}>Dashboard</Link>
+              </Button>
+            ) : (
+              ""
+            )}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
