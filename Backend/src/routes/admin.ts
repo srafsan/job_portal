@@ -20,3 +20,5 @@ adminRoute.get(
     res.send(updatedUsers);
   }
 );
+
+export default adminRoute;

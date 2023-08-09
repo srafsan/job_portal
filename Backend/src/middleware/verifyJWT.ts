@@ -15,6 +15,7 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const accessToken: string = authorization.split(" ")[1];
+
     // const user = await authProvider(accessToken);
 
     jwt.verify(accessToken, appConfig.accessTokenSecret, (error, decoded) => {
