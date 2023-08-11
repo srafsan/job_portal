@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link"
 import {useRouter} from "next/navigation";
+import Navbar from "@/components/Shared/Navbar/Navbar";
 
 const Home = () => {
   const router = useRouter()
@@ -10,14 +11,7 @@ const Home = () => {
     router.push("/product")
   }
   return <div>
-    Home Page
-    <Link href="/blog">
-      Blog
-    </Link>
-    <Link href="/product">
-      Products
-    </Link>
-    <button onClick={handleClick}>Place Order</button>
+    <Navbar/>
   </div>;
 };
 
