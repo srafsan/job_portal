@@ -1,8 +1,6 @@
 import React from "react";
-import Link from "next/link"
 import {useRouter} from "next/navigation";
-import Navbar from "@/components/Shared/Navbar/Navbar";
-import Footer from "@/components/Shared/Footer/Footer";
+import Hero from "@/components/Hero/Hero";
 
 const Home = () => {
   const router = useRouter()
@@ -11,10 +9,11 @@ const Home = () => {
     console.log("Placing your order");
     router.push("/product")
   }
-  return <div>
-    <Navbar/>
-    <Footer/>
-  </div>;
+  return (
+    <>
+      <Hero/>
+    </>
+  );
 };
 
 export default Home;

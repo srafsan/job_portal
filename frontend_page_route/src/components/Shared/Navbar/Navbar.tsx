@@ -1,5 +1,3 @@
-"use client";
-
 import React, {useState} from "react";
 
 import AppBar from "@mui/material/AppBar";
@@ -14,14 +12,13 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Link from "next/link";
-// import {useGlobalContext} from "@/app/Context/store";
+import {useGlobalContext} from "@/context/myContext";
 
 const pages = ["Home", "Jobs", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
-  // const {userRole} = useGlobalContext();
-  const userRole: string = "admin";
+  const {userRole} = useGlobalContext();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
