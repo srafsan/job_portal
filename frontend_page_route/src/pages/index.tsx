@@ -1,6 +1,8 @@
 import React from "react";
 import {useRouter} from "next/navigation";
-import Hero from "@/components/Hero/Hero";
+import Hero from "@/components/Home/Hero";
+import DesiredCategory from "@/components/Home/DesiredCategory";
+
 
 const Home = () => {
   const router = useRouter()
@@ -12,6 +14,7 @@ const Home = () => {
   return (
     <>
       <Hero/>
+      <DesiredCategory/>
     </>
   );
 };
