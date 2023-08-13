@@ -6,8 +6,8 @@ const verifyApplicant = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { user } = req;
-  if (user?.role !== Role.applicant) {
+  const { role } = req.decoded;
+  if (role !== Role.applicant) {
     return res
       .status(406)
       .send({ error: true, message: "unauthorized access for applicant" });

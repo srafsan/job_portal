@@ -82,17 +82,17 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
           {
             id: 1,
             label: "Manage Users",
-            route: "/dashboard/admin/manageUsers",
+            route: `${route.admin.manageUsers}`,
           },
           {
             id: 2,
             label: "Manage Jobs",
-            route: "/dashboard/admin/manageJobs",
+            route: `${route.admin.manageJobs}`,
           },
           {
             id: 3,
             label: "Manage Payments",
-            route: "/dashboard/admin/managePayments",
+            route: `${route.admin.managePayments}`,
           },
         ],
       });
@@ -103,16 +103,16 @@ authRouter.post(route.auth.login, async (req: Request, res: Response) => {
         role: "recruiter",
         token: { accessToken, refreshToken },
         options: [
-          { id: 1, label: "Add Job", route: "/dashboard/recruiter/addJob" },
+          { id: 1, label: "Add Job", route: `${route.recruiter.addJob}` },
           {
             id: 2,
             label: "Manage Jobs",
-            route: "/dashboard/recruiter/manageJobs",
+            route: `${route.recruiter.manageJobs}`,
           },
           {
             id: 3,
             label: "View Applicants",
-            route: "/dashboard/recruiter/viewApplicants",
+            route: `${route.recruiter.viewApplicants}`,
           },
         ],
       });
@@ -175,7 +175,6 @@ authRouter.post(
   verifyJWT,
   async (req: Request, res: Response) => {
     const token = req.body.refreshToken;
-    console.log("Logout", token);
 
     await insertBlackListJWT(token);
 
