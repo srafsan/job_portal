@@ -13,7 +13,7 @@ const DesiredCategory = () => {
       <Typography variant="h3" sx={{pb: "40px", fontWeight: "bold"}}>
         Choose Your Desired Category
       </Typography>
-      <Box sx={{width: '100%' }>
+      <Box sx={{width: '100%'}}>
         <Tabs
           value={value}
           onChange={handleChange}
