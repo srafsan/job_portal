@@ -34,7 +34,7 @@ const Hero = () => {
           backgroundColor: "rgba(0,0,0,0.5)"
         }}/>
 
-        <Typography variant="h2" sx={{fontWeight: "bold"}}>{text}</Typography>
+        <Typography variant="h2" sx={{fontWeight: "bold", filter: "brightness(1)"}}>{text}</Typography>
 
         <Box sx={{mt: 10, display: "flex", alignItems: "center"}}>
           <InputBase
