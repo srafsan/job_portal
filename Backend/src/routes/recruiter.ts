@@ -7,12 +7,17 @@ import {
   updateJobOnDB,
 } from "../services/dbServices";
 import { RecruiterMiddleware } from "../middleware/common";
+import multer from "multer";
+import {storage} from "../../index";
 
 const recruiterRoute: Router = Router();
+
+const upload = multer({storage})
 
 // Recruiter add job
 recruiterRoute.post(
   route.recruiter.addJob,
+  upload.single("image"),
   async (req: Request, res: Response, next: NextFunction) => {
     const {
       name,
@@ -21,7 +26,7 @@ recruiterRoute.post(
       location,
       experience,
       deadline,
-      post_by,
+      post_by
     } = req.body;
 
     const newJob: any = {
@@ -32,6 +37,7 @@ recruiterRoute.post(
       experience,
       deadline: JSON.parse(deadline),
       post_by: BigInt(post_by),
+      image: req.file?.filename
     };
     await insertJobToDB(newJob);
     return res.sendStatus(200);

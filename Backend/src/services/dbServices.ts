@@ -16,10 +16,21 @@ export async function insertUserToDB(userInfo: any): Promise<Boolean> {
   return !!user;
 }
 
-export async function insertJobToDB(jobInfo: any): Promise<Boolean> {
-  const job = await prisma.jobs.create({ data: jobInfo });
+export async function insertJobToDB(jobInfo: any): Promise<boolean> {
+  const job = await prisma.jobs.create({
+    data: {
+      ...jobInfo,
+      image: {
+        create: {
+          data: jobInfo.image, // Store image data
+          mimetype: 'image/jpeg' // Set appropriate mimetype
+        }
+      }
+    }
+  });
   return !!job;
 }
+
 
 export async function updateJobOnDB(
   jobId: number,

@@ -1,16 +1,15 @@
-import express, { Express, Request, Response } from "express";
+import express, {Express, Request} from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import multer from "multer";
+import path from "path";
 
 import route from "./src/common/routeNames";
 import adminRoute from "./src/routes/admin";
-import { rootRouter } from "./src/routes/root";
-import { authRouter } from "./src/routes/auth";
-import { dashboardRouter } from "./src/routes/dashboard";
-import { recruiterRoute } from "./src/routes/recruiter";
-import { findAllJobs } from "./src/services/dbServices";
-import { DecodeJwtPayload } from "./src/common/interfaces";
-import { AdminMiddleware } from "./src/middleware/common";
+import {rootRouter} from "./src/routes/root";
+import {authRouter} from "./src/routes/auth";
+import {dashboardRouter} from "./src/routes/dashboard";
+import {recruiterRoute} from "./src/routes/recruiter";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -23,7 +22,19 @@ app.use(
   })
 );
 
-// app.use(cookieParser());
+// Multer Setup
+export const storage = multer.diskStorage({
+  destination:(req: Request, file, cb) => {
+    cb(null, "uploads"); // Destination folder
+  },
+  filename: (req: Request, file, cb) => {
+    const ext = path.extname((file.originalname));
+    const uniqueFilename = `${Date.now()}${ext}`;
+    cb(null, uniqueFilename);
+  }
+})
+
+// Middlewares
 app.use(cors());
 
 // Routes

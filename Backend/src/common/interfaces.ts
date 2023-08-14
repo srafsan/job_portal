@@ -36,3 +36,29 @@ declare global {
     }
   }
 }
+
+export interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  role: number;
+  sid: string;
+}
+
+export interface IBlackListToken {
+  tokenId: number;
+  token: string;
+}
+
+export interface IJobs {
+  id: number;
+  name: string;
+  description: string;
+  salary: number;
+  location: string;
+  experience: number;
+  deadline: string;
+  post_by: number;
+  image: string;
+}

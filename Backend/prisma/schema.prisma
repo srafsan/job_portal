@@ -34,4 +34,5 @@ model Jobs {
   experience  Int /// This is in years
   deadline    String @db.VarChar(250)
   post_by     BigInt
+  image       String
 }
