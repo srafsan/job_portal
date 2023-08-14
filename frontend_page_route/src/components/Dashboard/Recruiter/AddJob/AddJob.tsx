@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
 import React from "react";
 import {useForm, SubmitHandler} from "react-hook-form";
 import {
@@ -11,21 +10,27 @@ import {
   Typography,
 } from "@mui/material";
 import {IInputs} from "@/utils/interfaces";
-import apiClient, {setClientAuthHeader} from "@/utils/apiClient";
+// import apiClient, {setClientAuthHeader} from "@/utils/apiClient";
 import {useGlobalContext} from "@/context/myContext";
-
 
 const AddJob = () => {
   const {userId} = useGlobalContext();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: {errors},
   } = useForm<IInputs>();
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const imageFile = e.target.files;
+    console.log(imageFile)
+    // setValue('image', imageFile);
+  };
+
   const onSubmit: SubmitHandler<IInputs> = async (data) => {
     const {name, description, salary, location, experience, deadline} = data;
-
+    console.log(data)
     const jobData = {
       name,
       description,
@@ -36,18 +41,18 @@ const AddJob = () => {
       post_by: userId,
     };
 
-    try {
-      setClientAuthHeader();
-      const res = await apiClient.post("/dashboard/recruiter/add_job", jobData);
-
-      if (res.status === 200) {
-        alert("Job Added Successfully");
-      } else {
-        alert("Something went wrong");
-      }
-    } catch (error) {
-      console.log("Error posting the job data", error);
-    }
+    // try {
+    //   setClientAuthHeader();
+    //   const res = await apiClient.post("/dashboard/recruiter/add_job", jobData);
+    //
+    //   if (res.status === 200) {
+    //     alert("Job Added Successfully");
+    //   } else {
+    //     alert("Something went wrong");
+    //   }
+    // } catch (error) {
+    //   console.log("Error posting the job data", error);
+    // }
   };
 
   return (
@@ -64,7 +69,7 @@ const AddJob = () => {
 
         {/* Form Column */}
         <Grid item xs={12} sm={8}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
             <Stack direction="column" spacing={2}>
               <Typography variant="h5">Add Job</Typography>
               <TextField
@@ -103,6 +108,11 @@ const AddJob = () => {
                 variant="outlined"
                 type="date"
                 {...register("deadline", {required: true})}
+              />
+              <TextField
+                label="Upload Image"
+                {...register('image', {required: true})} type="file" id="image"
+                onChange={handleImageChange}
               />
               <Button type="submit" variant="contained" color="primary">
                 Add Job
