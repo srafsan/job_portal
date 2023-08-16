@@ -31,6 +31,9 @@ const AddJob = () => {
   const onSubmit: SubmitHandler<IInputs> = async (data) => {
     const {name, description, salary, location, experience, deadline} = data;
     console.log(data)
+    if (data.image && data.image?.length > 0) {
+      console.log('file ', data.image[0])
+    }
     const jobData = {
       name,
       description,

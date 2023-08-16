@@ -16,7 +16,7 @@ export interface IInputs {
   location: string;
   experience: number;
   deadline: Date;
-  image: File;
+  image: FileList;
 }
 
 export interface IUpdateModal {
