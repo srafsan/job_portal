@@ -10,8 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import {IInputs} from "@/utils/interfaces";
-// import apiClient, {setClientAuthHeader} from "@/utils/apiClient";
+import apiClient, {setClientAuthHeader} from "@/utils/apiClient";
 import {useGlobalContext} from "@/context/myContext";
+import axios from "axios";
 
 const AddJob = () => {
   const {userId} = useGlobalContext();
@@ -22,18 +23,14 @@ const AddJob = () => {
     formState: {errors},
   } = useForm<IInputs>();
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const imageFile = e.target.files;
-    console.log(imageFile)
-    // setValue('image', imageFile);
-  };
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const imageFile = e.target.files;
+  //   console.log(imageFile)
+  //   setValue('image', imageFile);
+  // };
 
   const onSubmit: SubmitHandler<IInputs> = async (data) => {
     const {name, description, salary, location, experience, deadline} = data;
-    console.log(data)
-    if (data.image && data.image?.length > 0) {
-      console.log('file ', data.image[0])
-    }
     const jobData = {
       name,
       description,
@@ -42,12 +39,13 @@ const AddJob = () => {
       experience: Number(experience),
       deadline: JSON.stringify(deadline),
       post_by: userId,
+      image: data.image[0]
     };
 
     // try {
     //   setClientAuthHeader();
     //   const res = await apiClient.post("/dashboard/recruiter/add_job", jobData);
-    //
+    
     //   if (res.status === 200) {
     //     alert("Job Added Successfully");
     //   } else {
@@ -56,6 +54,9 @@ const AddJob = () => {
     // } catch (error) {
     //   console.log("Error posting the job data", error);
     // }
+
+    await axios.post("http://localhost:3001/uploads")
+
   };
 
   return (
@@ -115,7 +116,7 @@ const AddJob = () => {
               <TextField
                 label="Upload Image"
                 {...register('image', {required: true})} type="file" id="image"
-                onChange={handleImageChange}
+                // onChange={handleImageChange}
               />
               <Button type="submit" variant="contained" color="primary">
                 Add Job
