@@ -1,4 +1,4 @@
-import express, {Express, Request} from "express";
+import express, {Express, Request, Response} from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import multer from "multer";
@@ -28,7 +28,7 @@ export const storage = multer.diskStorage({
     cb(null, "uploads"); // Destination folder
   },
   filename: (req: Request, file, cb) => {
-    const ext = path.extname((file.originalname));
+    const ext = path.extname(file.originalname);
     const uniqueFilename = `${Date.now()}${ext}`;
     cb(null, uniqueFilename);
   }
@@ -36,8 +36,20 @@ export const storage = multer.diskStorage({
 
 // Middlewares
 app.use(cors());
+const upload = multer({storage})
+
+app.get("/", (req: Request, res: Response) => {
+  res.send(`
+  <form method="POST" action="/uploads" encType="multipart/form-data">
+        <input type="file" name="image" />
+        <input type="submit" />
+      </form>`)
+})
 
 // Routes
+app.post("/uploads", upload.single("image"), (req: Request, res: Response) => {
+  res.send("UPLOADED")
+})
 app.use(route.home.main, rootRouter);
 app.use(route.home.main, authRouter);
 app.use(route.home.main, dashboardRouter);
