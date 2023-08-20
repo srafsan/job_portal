@@ -1,6 +1,21 @@
 import React, {useState} from 'react';
-import {Box, Tab, Tabs, Typography} from "@mui/material";
+import {Box, Tab, Grid, Paper, Typography} from "@mui/material";
 import {TabContext, TabList, TabPanel} from "@mui/lab";
+import JobCard from "@/components/Shared/JobCard";
+import {styled} from "@mui/material/styles";
+
+const Item = styled(Paper)(({theme}) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+const jobGrid = {
+  width: "80%",
+  margin: "0 auto"
+}
 
 const DesiredCategory = () => {
   const [value, setValue] = useState('one');
@@ -23,9 +38,37 @@ const DesiredCategory = () => {
               <Tab label="Item Three" value="3"/>
             </TabList>
           </Box>
-          <TabPanel value="1">Item One</TabPanel>
-          <TabPanel value="2">Item Two</TabPanel>
-          <TabPanel value="3">Item Three</TabPanel>
+          <TabPanel value="1">
+            <Grid container spacing={6} style={jobGrid}>
+              <Grid item xs={6} md={4}>
+                <Item>
+                  <JobCard/>
+                  <JobCard/>
+                  <JobCard/>
+                </Item>
+              </Grid>
+              <Grid item xs={6} md={4}>
+                <Item>
+                  <JobCard/>
+                  <JobCard/>
+                  <JobCard/>
+                </Item>
+              </Grid>
+              <Grid item xs={6} md={4}>
+                <Item>
+                  <JobCard/>
+                  <JobCard/>
+                  <JobCard/>
+                </Item>
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel value="2">
+
+          </TabPanel>
+          <TabPanel value="3">
+
+          </TabPanel>
         </TabContext>
       </Box>
     </Box>
