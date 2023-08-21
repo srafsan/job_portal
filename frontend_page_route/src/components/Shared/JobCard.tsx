@@ -61,7 +61,7 @@ export default function JobCard() {
       <CardActions sx={{padding: "16px"}}>
         <Button size="small" variant="contained">Apply</Button>
         <Button size="small" variant="outlined">
-          <Link href={`/job-details/1`} style={{textDecoration: "none"}}>Details</Link>
+          <Link href={`/details/`} style={{textDecoration: "none"}}>Details</Link>
         </Button>
       </CardActions>
     </Card>
