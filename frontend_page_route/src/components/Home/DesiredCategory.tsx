@@ -18,15 +18,15 @@ const jobGrid = {
 }
 
 const DesiredCategory = () => {
-  const [value, setValue] = useState('one');
+  const [value, setValue] = useState('1');
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
   return (
-    <Box sx={{my: "90px", textAlign: "center"}}>
-      <Typography variant="h3" sx={{pb: "40px", fontWeight: "bold"}}>
+    <Box sx={{my: "90px"}}>
+      <Typography variant="h3" sx={{pb: "40px", fontWeight: "bold", textAlign: "center"}}>
         Choose Your Desired Category
       </Typography>
       <Box sx={{width: '100%', typography: 'body1'}}>
@@ -40,34 +40,42 @@ const DesiredCategory = () => {
           </Box>
           <TabPanel value="1">
             <Grid container spacing={6} style={jobGrid}>
-              <Grid item xs={6} md={4}>
-                <Item>
-                  <JobCard/>
-                  <JobCard/>
-                  <JobCard/>
-                </Item>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
               </Grid>
-              <Grid item xs={6} md={4}>
-                <Item>
-                  <JobCard/>
-                  <JobCard/>
-                  <JobCard/>
-                </Item>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
               </Grid>
-              <Grid item xs={6} md={4}>
-                <Item>
-                  <JobCard/>
-                  <JobCard/>
-                  <JobCard/>
-                </Item>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
               </Grid>
             </Grid>
           </TabPanel>
           <TabPanel value="2">
-
+            <Grid container spacing={6} style={jobGrid}>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
+              </Grid>
+            </Grid>
           </TabPanel>
           <TabPanel value="3">
-
+            <Grid container spacing={6} style={jobGrid}>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <JobCard/>
+              </Grid>
+            </Grid>
           </TabPanel>
         </TabContext>
       </Box>

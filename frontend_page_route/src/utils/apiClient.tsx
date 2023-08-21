@@ -5,14 +5,17 @@ const apiClient = axios.create({
   baseURL: "http://localhost:3001",
 })
 
-export const setClientAuthHeader = () => {
-  const token = Cookie.get("accessToken")
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = Cookie.get("accessToken");
 
-  if (token) {
-    apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete apiClient.defaults.headers.common["Authorization"]
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error)
   }
-}
-
+);
 export default apiClient

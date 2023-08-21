@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useState} from 'react';
 import Cookie from "js-cookie";
 import {useRouter} from "next/navigation"
-import apiClient, {setClientAuthHeader} from "@/utils/apiClient";
+import apiClient from "@/utils/apiClient";
 
 interface ContextProps {
   userId: BigInt | null;
@@ -80,7 +80,6 @@ export const GlobalContextProvider = ({children}: any) => {
   // Logout
   const logoutFunc = async () => {
     const refreshToken = Cookie.get("refreshToken");
-    setClientAuthHeader();
     const res = await apiClient.post("/logout", {refreshToken});
 
     if (res.status === 200) {

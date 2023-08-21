@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import ManageJobs from "@/components/Dashboard/Recruiter/ManageJobs/ManageJobs";
 
-import apiClient, {setClientAuthHeader} from "@/utils/apiClient";
+import apiClient from "@/utils/apiClient";
 import {IJobs} from "@/utils/interfaces";
 import Dashboard from "@/pages/dashboard";
 
 async function fetchInstructorJobs(): Promise<IJobs[]> {
-  setClientAuthHeader();
   const res = await apiClient.get("/dashboard/recruiter/manage_jobs");
   return res.data;
 }
